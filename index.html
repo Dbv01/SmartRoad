@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>SmartRoad | Интеллектуальные Транспортные Системы</title>
+    <title>CoordRoads | Интеллектуальные Транспортные Системы</title>
     
     <!-- Фавиконка -->
     <link rel="icon" type="image/png" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛣️</text></svg>">
@@ -18,7 +18,6 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     
     <script>
-        // ТВОЙ FIREBASE КОНФИГ
         const FIREBASE_CONFIG = {
             apiKey: "AIzaSyAuEAZjtidEgnCywcrIBaYyW6fPqUwlieM",
             authDomain: "smartroad-its.firebaseapp.com",
@@ -27,7 +26,7 @@
             messagingSenderId: "195764977795",
             appId: "1:195764977795:web:e9208beaf54e038b9a5bb6"
         };
-        console.log("SmartRoad Firebase config loaded");
+        console.log("CoordRoads Firebase config loaded");
     </script>
     
     <style>
@@ -223,7 +222,6 @@
             gap: 1.2rem;
         }
 
-        /* Стили индикатора пользователя */
         #userIndicator {
             display: flex;
             align-items: center;
@@ -237,8 +235,8 @@
         }
 
         #userIndicator:hover {
-            background: rgba(255, 255, 255, 0.1);
-            border-color: var(--primary);
+            background: rgba(255, 255, 255, 0.1) !important;
+            border-color: var(--primary) !important;
         }
 
         #userAvatarSmall {
@@ -2212,7 +2210,7 @@
 <div id="loadingScreen" style="position:fixed; inset:0; background:var(--dark); display:flex; align-items:center; justify-content:center; z-index:9999;">
     <div style="text-align:center">
         <div style="width:60px; height:60px; border:3px solid rgba(255,107,53,0.2); border-top-color:var(--primary); border-radius:50%; animation:spin 1s linear infinite; margin:0 auto 1rem;"></div>
-        <p style="color:var(--primary); letter-spacing:2px; font-weight:600;">SMART ROAD</p>
+        <p style="color:var(--primary); letter-spacing:2px; font-weight:600;">COORD ROADS</p>
     </div>
 </div>
 
@@ -2229,10 +2227,9 @@
     </div>
 </div>
 
-<!-- НАВИГАЦИЯ С ИНДИКАТОРОМ ПОЛЬЗОВАТЕЛЯ -->
 <nav class="navbar" id="navbar">
     <a class="logo" onclick="showPage('home')">
-        <span>SMART</span>ROAD
+        <span>COORD</span>ROADS
     </a>
     
     <button class="mobile-menu-btn" onclick="toggleMenu()">
@@ -2248,39 +2245,37 @@
         <li><button class="nav-link" id="adminNavBtn" style="display:none" onclick="showPage('admin')">Админ</button></li>
     </ul>
     <div class="nav-actions">
-        
-    <!-- Индикатор пользователя (объединённая кнопка) -->
-    <div id="userIndicator" style="display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 4px 8px; background: rgba(255, 255, 255, 0.05); border-radius: 25px; transition: all 0.3s; border: 1px solid transparent;" onclick="showPage('account')" title="Личный кабинет">
-        <div id="userAvatarSmall" style="width: 32px; height: 32px; border-radius: 50%; background: var(--gradient); display: flex; align-items: center; justify-content: center; overflow: hidden; font-size: 14px; color: white;">
-            <i class="fas fa-user"></i>
+        <div id="userIndicator" style="display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 4px 8px; background: rgba(255, 255, 255, 0.05); border-radius: 25px; transition: all 0.3s; border: 1px solid transparent;" onclick="showPage('account')" title="Личный кабинет">
+            <div id="userAvatarSmall" style="width: 32px; height: 32px; border-radius: 50%; background: var(--gradient); display: flex; align-items: center; justify-content: center; overflow: hidden; font-size: 14px; color: white;">
+                <i class="fas fa-user"></i>
+            </div>
+            <span id="userNameSmall" style="color: var(--gray); font-size: 0.85rem; max-width: 100px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"></span>
+            <button id="logoutBtnSmall" style="display:none; background: none; border: none; color: var(--error); cursor: pointer; font-size: 0.8rem; padding: 4px 8px; border-radius: 4px;" onclick="event.stopPropagation(); logout()">
+                <i class="fas fa-sign-out-alt"></i>
+            </button>
         </div>
-        <span id="userNameSmall" style="color: var(--gray); font-size: 0.85rem; max-width: 100px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"></span>
-        <button id="logoutBtnSmall" style="display:none; background: none; border: none; color: var(--error); cursor: pointer; font-size: 0.8rem; padding: 4px 8px; border-radius: 4px;" onclick="event.stopPropagation(); logout()">
-            <i class="fas fa-sign-out-alt"></i>
+        <button class="nav-icon" onclick="showPage('cart')" title="Корзина">
+            <i class="fas fa-shopping-cart"></i>
+            <span class="cart-badge" id="cartBadge">0</span>
         </button>
     </div>
-    <button class="nav-icon" onclick="showPage('cart')" title="Корзина">
-        <i class="fas fa-shopping-cart"></i>
-        <span class="cart-badge" id="cartBadge">0</span>
-    </button>
-</div>
 </nav>
 
 <section id="homePage" class="page active">
-   <div class="fullscreen-hero">
+    <div class="fullscreen-hero">
         <div class="hero-image-container">
             <img src="hero-desktop.jpg" alt="Умные дороги будущего" class="hero-image desktop-hero" 
-                 onerror="this.onerror=null; this.src='https://placehold.co/1920x1080/0A1128/FF6B35?text=SMART+ROAD';">
+                 onerror="this.onerror=null; this.src='https://placehold.co/1920x1080/0A1128/FF6B35?text=COORD+ROADS';">
             
             <img src="hero-mobile.jpg" alt="Умные дороги" class="hero-image mobile-hero" 
-                 onerror="this.onerror=null; this.src='https://placehold.co/1080x1920/0A1128/FF6B35?text=SMART+ROAD';">
+                 onerror="this.onerror=null; this.src='https://placehold.co/1080x1920/0A1128/FF6B35?text=COORD+ROADS';">
             
             <div class="hero-overlay"></div>
         </div>
         
         <div class="hero-content fade-in">
-            <h1 class="hero-title editable-text" data-page="home" data-field="hero_title">Smart Road Systems</h1>
-            <p class="hero-subtitle editable-text" data-page="home" data-field="hero_subtitle">Инновационные технологии для умных дорог и безопасного движения</p>
+            <h1 class="hero-title editable-text" data-page="home" data-field="hero_title">Coord Roads Systems</h1>
+            <p class="hero-subtitle editable-text" data-page="home" data-field="hero_subtitle">Координация дорожного движения будущего</p>
             
             <div class="hero-buttons">
                 <button class="btn" onclick="showPage('catalog')">
@@ -2328,10 +2323,10 @@
         </div>
         
         <div class="about-section">
-            <h2 class="section-title animate-on-scroll editable-text" data-page="home" data-field="about_preview_title">О компании Smart Road</h2>
+            <h2 class="section-title animate-on-scroll editable-text" data-page="home" data-field="about_preview_title">О компании Coord Roads</h2>
             <div class="about-content">
                 <div class="about-card animate-on-scroll editable-text" data-page="home" data-field="about_preview_text">
-                    <p>Компания <strong>Smart Road</strong> — ведущий разработчик интеллектуальных транспортных систем нового поколения. Мы создаём технологии, которые превращают обычные дороги в умные магистрали будущего. Наша команда из 60+ специалистов работает над проектами любой сложности — от локальных перекрёстков до интеллектуальных транспортных сетей целых регионов.</p>
+                    <p>Компания <strong>Coord Roads</strong> — ведущий разработчик интеллектуальных транспортных систем нового поколения. Мы создаём технологии, которые превращают обычные дороги в умные магистрали будущего. Наша команда из 60+ специалистов работает над проектами любой сложности — от локальных перекрёстков до интеллектуальных транспортных сетей целых регионов.</p>
                     <button class="btn" style="margin-top: 1.5rem;" onclick="showPage('about')">
                         <i class="fas fa-info-circle"></i> Подробнее о компании
                     </button>
@@ -2348,12 +2343,12 @@
     </div>
     
     <div class="about-section">
-        <h2 class="section-title editable-text" data-page="about" data-field="about_title">О компании Smart Road</h2>
+        <h2 class="section-title editable-text" data-page="about" data-field="about_title">О компании Coord Roads</h2>
         
         <div class="about-content">
             <div class="about-card animate-on-scroll">
                 <h3 class="editable-text" data-page="about" data-field="about_section1_title">Кто мы</h3>
-                <p class="editable-text" data-page="about" data-field="about_section1_text">ООО «Смарт Роад» — российский разработчик и интегратор интеллектуальных транспортных систем. С 2015 года мы внедряем передовые технологии для повышения безопасности и эффективности дорожного движения.</p>
+                <p class="editable-text" data-page="about" data-field="about_section1_text">ООО «Коорд Роадс» — российский разработчик и интегратор интеллектуальных транспортных систем. С 2015 года мы внедряем передовые технологии для повышения безопасности и эффективности дорожного движения.</p>
             </div>
             
             <div class="about-card animate-on-scroll">
@@ -2478,13 +2473,13 @@
             <div class="contact-info animate-on-scroll">
                 <div class="contact-card">
                     <div class="contact-icon"><i class="fas fa-building"></i></div>
-                    <p style="font-size: 1.2rem; color: var(--light);" class="editable-text" data-page="contact" data-field="contact_name"><strong>ООО «Смарт Роад»</strong></p>
+                    <p style="font-size: 1.2rem; color: var(--light);" class="editable-text" data-page="contact" data-field="contact_name"><strong>ООО «Коорд Роадс»</strong></p>
                 </div>
                 
                 <div class="contact-card">
                     <div class="contact-icon"><i class="fas fa-envelope"></i></div>
                     <h3 class="editable-text" data-page="contact" data-field="contact_email_label">Электронная почта</h3>
-                    <p class="editable-text" data-page="contact" data-field="contact_email">info@smartroad.ru</p>
+                    <p class="editable-text" data-page="contact" data-field="contact_email">info@coordroads.ru</p>
                 </div>
                 
                 <div class="contact-card">
@@ -2660,7 +2655,7 @@
 <footer class="footer">
     <div class="footer-content">
         <div class="copyright">
-            © <span id="currentYear"></span> Smart Road Systems. Все права защищены.
+            © <span id="currentYear"></span> Coord Roads Systems. Все права защищены.
         </div>
         <ul class="footer-links">
             <li><a href="#" class="footer-link" onclick="showPage('home')">Главная</a></li>
@@ -2690,7 +2685,7 @@
     let allRequests = [];
     let allUsers = [];
     let allReviews = [];
-    let cart = JSON.parse(localStorage.getItem('smartroad_cart') || '[]');
+    let cart = JSON.parse(localStorage.getItem('coordroads_cart') || '[]');
     let currentFilter = 'all';
     let currentProductId = null;
     let editModeActive = false;
@@ -2808,7 +2803,6 @@
         }
     };
 
-    // Функция обновления индикатора пользователя
     function updateUserIndicator() {
         const avatarEl = document.getElementById('userAvatarSmall');
         const nameEl = document.getElementById('userNameSmall');
@@ -3411,7 +3405,7 @@
         const existing = cart.find(i => i.id === productId);
         if (existing) existing.qty += qty;
         else cart.push({ id: productId, name: p.name, price: p.price, qty, imageUrl: p.images?.[0] || p.imageUrl });
-        localStorage.setItem('smartroad_cart', JSON.stringify(cart));
+        localStorage.setItem('coordroads_cart', JSON.stringify(cart));
         updateCartBadge();
         toast('Товар добавлен в корзину');
         renderCart();
@@ -3457,7 +3451,7 @@
         if (item) {
             item.qty += delta;
             if (item.qty <= 0) cart = cart.filter(i => i.id !== id);
-            localStorage.setItem('smartroad_cart', JSON.stringify(cart));
+            localStorage.setItem('coordroads_cart', JSON.stringify(cart));
             updateCartBadge();
             renderCart();
         }
@@ -3465,7 +3459,7 @@
     
     window.removeFromCart = function(id) {
         cart = cart.filter(i => i.id !== id);
-        localStorage.setItem('smartroad_cart', JSON.stringify(cart));
+        localStorage.setItem('coordroads_cart', JSON.stringify(cart));
         updateCartBadge();
         renderCart();
     };
@@ -3491,7 +3485,7 @@
             createdAt: serverTimestamp()
         });
         cart = [];
-        localStorage.setItem('smartroad_cart', JSON.stringify(cart));
+        localStorage.setItem('coordroads_cart', JSON.stringify(cart));
         updateCartBadge();
         document.getElementById('checkoutForm').style.display = 'none';
         document.getElementById('checkoutSuccess').style.display = 'block';
@@ -4056,44 +4050,44 @@
             });
             
             await addDoc(collection(db, 'products'), {
-                name: 'AI Камера SmartCam X1',
-                description: 'Интеллектуальная камера с нейросетевым анализом дорожной обстановки. Распознаёт типы ТС, пешеходов, дорожные знаки и разметку. Встроенный модуль глубокого обучения.',
+                name: 'AI Камера CoordCam X1',
+                description: 'Интеллектуальная камера с нейросетевым анализом дорожной обстановки. Распознаёт типы ТС, пешеходов, дорожные знаки и разметку.',
                 price: 185000,
                 categoryId: catMap['AI Камеры'] || '',
-                images: ['https://images.unsplash.com/photo-1557804506-669a67965ba0?w=600&q=80'],
+                images: ['https://placehold.co/600x400/FF6B35/white?text=AI+Camera'],
                 inStock: true,
                 tags: ['камера', 'AI', 'компьютерное зрение'],
                 createdAt: serverTimestamp()
             });
             
             await addDoc(collection(db, 'products'), {
-                name: 'Нейросветофор NeuroLight Pro',
-                description: 'Адаптивный светофор с глубоким обучением. Анализирует трафик в реальном времени и оптимизирует циклы. Снижает время ожидания на 40%.',
+                name: 'Нейросветофор CoordLight Pro',
+                description: 'Адаптивный светофор с глубоким обучением. Анализирует трафик в реальном времени.',
                 price: 320000,
                 categoryId: catMap['Светофоры'] || '',
-                images: ['https://images.unsplash.com/photo-1580674684081-7617fbf3d745?w=600&q=80'],
+                images: ['https://placehold.co/600x400/004E89/white?text=Traffic+Light'],
                 inStock: true,
                 tags: ['светофор', 'нейросеть', 'адаптивный'],
                 createdAt: serverTimestamp()
             });
             
             await addDoc(collection(db, 'products'), {
-                name: 'Радарный детектор RoadSense R2',
-                description: 'Высокоточный радарный детектор для подсчёта интенсивности движения и классификации транспортных средств. Точность 99.5%, дальность до 250 м.',
+                name: 'Радарный детектор CoordSense R2',
+                description: 'Высокоточный радарный детектор для подсчёта интенсивности движения.',
                 price: 95000,
                 categoryId: catMap['Датчики движения'] || '',
-                images: ['https://images.unsplash.com/photo-1563770660941-20978e870e26?w=600&q=80'],
+                images: ['https://placehold.co/600x400/1A659E/white?text=Radar+Sensor'],
                 inStock: true,
                 tags: ['радар', 'детектор', 'трафик'],
                 createdAt: serverTimestamp()
             });
             
             await addDoc(collection(db, 'products'), {
-                name: 'Умное табло InfoSign LED',
-                description: 'Динамическое информационное табло с адаптивной яркостью и удалённым управлением. Отображает пробки, погоду, ограничения скорости в реальном времени.',
+                name: 'Умное табло CoordSign LED',
+                description: 'Динамическое информационное табло с адаптивной яркостью.',
                 price: 145000,
                 categoryId: catMap['Информационные табло'] || '',
-                images: ['https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=600&q=80'],
+                images: ['https://placehold.co/600x400/FF6B35/white?text=LED+Sign'],
                 inStock: true,
                 tags: ['табло', 'LED', 'информация'],
                 createdAt: serverTimestamp()
