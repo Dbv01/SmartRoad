@@ -326,6 +326,11 @@
             z-index: 1001;
         }
 
+        /* Скрываем мобильную корзину на десктопе */
+        .mobile-only-item {
+            display: none !important;
+        }
+
         @media (max-width: 768px) {
             .nav-links {
                 position: fixed;
@@ -376,6 +381,11 @@
 
             #userIndicator {
                 padding: 4px;
+            }
+
+            /* Показываем корзину в мобильном меню */
+            .mobile-only-item {
+                display: block !important;
             }
         }
 
@@ -2243,6 +2253,12 @@
         <li><button class="nav-link" onclick="showPage('services')">Услуги</button></li>
         <li><button class="nav-link" onclick="showPage('contact')">Контакты</button></li>
         <li><button class="nav-link" id="adminNavBtn" style="display:none" onclick="showPage('admin')">Админ</button></li>
+        <!-- Корзина в мобильном меню -->
+        <li class="mobile-only-item">
+            <button class="nav-link" onclick="showPage('cart')">
+                <i class="fas fa-shopping-cart"></i> Корзина <span id="cartBadgeMobile" style="background: var(--gradient); color: white; padding: 2px 8px; border-radius: 50px; font-size: 0.8rem; margin-left: 8px;">0</span>
+            </button>
+        </li>
     </ul>
     <div class="nav-actions">
         <div id="userIndicator" style="display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 4px 8px; background: rgba(255, 255, 255, 0.05); border-radius: 25px; transition: all 0.3s; border: 1px solid transparent;" onclick="showPage('account')" title="Личный кабинет">
@@ -3414,6 +3430,8 @@
     function updateCartBadge() {
         const total = cart.reduce((s, i) => s + i.qty, 0);
         document.getElementById('cartBadge').textContent = total;
+        const mobileBadge = document.getElementById('cartBadgeMobile');
+        if (mobileBadge) mobileBadge.textContent = total;
     }
     
     function renderCart() {
