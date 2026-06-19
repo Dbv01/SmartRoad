@@ -18,7 +18,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
     
     <script>
-        // ТВОЙ НОВЫЙ FIREBASE КОНФИГ
+        // ТВОЙ FIREBASE КОНФИГ
         const FIREBASE_CONFIG = {
             apiKey: "AIzaSyAuEAZjtidEgnCywcrIBaYyW6fPqUwlieM",
             authDomain: "smartroad-its.firebaseapp.com",
@@ -31,7 +31,6 @@
     </script>
     
     <style>
-        /* НОВАЯ ЦВЕТОВАЯ СХЕМА */
         * {
             margin: 0;
             padding: 0;
@@ -80,7 +79,6 @@
             50% { box-shadow: 0 0 40px rgba(255, 107, 53, 0.6); }
         }
 
-        /* Страницы */
         .page {
             display: none !important;
             padding-top: 80px;
@@ -102,7 +100,6 @@
             opacity: 1 !important;
         }
 
-        /* Режим редактирования */
         .edit-mode-active .editable-text {
             outline: 2px dashed var(--primary);
             outline-offset: 4px;
@@ -138,7 +135,6 @@
             opacity: 1;
         }
 
-        /* Навигация */
         .navbar {
             position: fixed;
             top: 0;
@@ -227,6 +223,68 @@
             gap: 1.2rem;
         }
 
+        /* Стили индикатора пользователя */
+        #userIndicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            padding: 4px 8px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 25px;
+            transition: all 0.3s;
+            border: 1px solid transparent;
+        }
+
+        #userIndicator:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: var(--primary);
+        }
+
+        #userAvatarSmall {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            font-size: 14px;
+            color: white;
+        }
+
+        #userNameSmall {
+            color: var(--gray);
+            font-size: 0.85rem;
+            max-width: 100px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            transition: color 0.3s;
+        }
+
+        #userIndicator:hover #userNameSmall {
+            color: var(--primary);
+        }
+
+        #logoutBtnSmall {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--error);
+            cursor: pointer;
+            font-size: 0.8rem;
+            padding: 4px 8px;
+            border-radius: 4px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        #userIndicator:hover #logoutBtnSmall {
+            opacity: 1;
+        }
+
         .nav-icon {
             background: none;
             border: none;
@@ -313,9 +371,16 @@
             .mobile-menu-btn {
                 display: block;
             }
+
+            #userNameSmall {
+                display: none;
+            }
+
+            #userIndicator {
+                padding: 4px;
+            }
         }
 
-        /* ГЛАВНАЯ СТРАНИЦА */
         .fullscreen-hero {
             position: relative;
             width: 100%;
@@ -478,7 +543,6 @@
             }
         }
 
-        /* Основной контент */
         .main-content {
             padding: 5rem 5%;
             background: linear-gradient(180deg, #0A1128 0%, #0F1A3A 100%);
@@ -490,7 +554,6 @@
             }
         }
 
-        /* Анимации при скролле */
         .animate-on-scroll {
             opacity: 0;
             transform: translateY(50px);
@@ -502,7 +565,6 @@
             transform: translateY(0);
         }
 
-        /* Улучшенные анимации */
         .product-card,
         .service-item,
         .advantage-item,
@@ -527,7 +589,6 @@
             border-color: var(--primary);
         }
 
-        /* Каталог */
         .catalog-filters {
             padding: 2rem 5%;
             background: var(--card-bg);
@@ -674,7 +735,6 @@
             font-size: 0.8rem;
         }
 
-        /* Преимущества */
         .advantages {
             padding: 4rem 5%;
             text-align: center;
@@ -720,7 +780,6 @@
             margin-bottom: 1rem;
         }
 
-        /* Заголовки */
         .section-title {
             font-family: 'Playfair Display', serif;
             font-size: 2.8rem;
@@ -751,7 +810,6 @@
             }
         }
 
-        /* Кнопки */
         .btn {
             display: inline-block;
             background: var(--gradient);
@@ -792,7 +850,6 @@
             font-size: 0.85rem;
         }
 
-        /* Футер */
         .footer {
             background: #050A18;
             padding: 3rem 5% 1.5rem;
@@ -855,7 +912,6 @@
             color: var(--primary);
         }
 
-        /* Остальные стили */
         .product-rating {
             display: flex;
             align-items: center;
@@ -1164,7 +1220,6 @@
             box-shadow: 0 0 20px rgba(255, 107, 53, 0.3);
         }
 
-        /* Отзывы */
         .reviews-section {
             margin-top: 64px;
         }
@@ -2161,12 +2216,10 @@
     </div>
 </div>
 
-<!-- Кнопка "Наверх" -->
 <div class="back-to-top" id="backToTop" onclick="scrollToTop()">
     <i class="fas fa-chevron-up"></i>
 </div>
 
-<!-- Zoom Modal -->
 <div class="zoom-modal" id="zoomModal" onclick="closeZoom()">
     <div class="zoom-close" onclick="closeZoom()"><i class="fas fa-times"></i></div>
     <div class="zoom-prev" onclick="event.stopPropagation();zoomPrev()"><i class="fas fa-chevron-left"></i></div>
@@ -2176,7 +2229,7 @@
     </div>
 </div>
 
-<!-- Навигация -->
+<!-- НАВИГАЦИЯ С ИНДИКАТОРОМ ПОЛЬЗОВАТЕЛЯ -->
 <nav class="navbar" id="navbar">
     <a class="logo" onclick="showPage('home')">
         <span>SMART</span>ROAD
@@ -2195,12 +2248,26 @@
         <li><button class="nav-link" id="adminNavBtn" style="display:none" onclick="showPage('admin')">Админ</button></li>
     </ul>
     <div class="nav-actions">
-        <button class="nav-icon" onclick="showPage('account')"><i class="fas fa-user"></i></button>
-        <button class="nav-icon" onclick="showPage('cart')"><i class="fas fa-shopping-cart"></i><span class="cart-badge" id="cartBadge">0</span></button>
+        <!-- Индикатор пользователя -->
+        <div id="userIndicator" style="display: flex; align-items: center; gap: 8px; cursor: pointer;" onclick="showPage('account')">
+            <div id="userAvatarSmall" style="width: 32px; height: 32px; border-radius: 50%; background: var(--gradient); display: flex; align-items: center; justify-content: center; overflow: hidden; font-size: 14px; color: white;">
+                <i class="fas fa-user"></i>
+            </div>
+            <span id="userNameSmall" style="color: var(--gray); font-size: 0.85rem; max-width: 100px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"></span>
+            <button id="logoutBtnSmall" style="display:none; background: none; border: none; color: var(--error); cursor: pointer; font-size: 0.8rem; padding: 4px 8px; border-radius: 4px;" onclick="event.stopPropagation(); logout()">
+                <i class="fas fa-sign-out-alt"></i>
+            </button>
+        </div>
+        <button class="nav-icon" onclick="showPage('account')" title="Личный кабинет">
+            <i class="fas fa-user"></i>
+        </button>
+        <button class="nav-icon" onclick="showPage('cart')" title="Корзина">
+            <i class="fas fa-shopping-cart"></i>
+            <span class="cart-badge" id="cartBadge">0</span>
+        </button>
     </div>
 </nav>
 
-<!-- Главная страница -->
 <section id="homePage" class="page active">
     <div class="fullscreen-hero">
         <div class="hero-image-container">
@@ -2276,7 +2343,6 @@
     </div>
 </section>
 
-<!-- О компании -->
 <section id="aboutPage" class="page">
     <div class="breadcrumbs">
         <a href="#" onclick="showPage('home')">Главная</a> / 
@@ -2316,7 +2382,6 @@
     </div>
 </section>
 
-<!-- Каталог -->
 <section id="catalogPage" class="page">
     <div class="breadcrumbs">
         <a href="#" onclick="showPage('home')">Главная</a> / 
@@ -2361,12 +2426,10 @@
     </div>
 </section>
 
-<!-- Страница товара -->
 <section id="productPage" class="page">
     <div class="page-wrap" id="productDetailContent" style="max-width: 1200px; margin: 0 auto; padding: 48px 24px;"></div>
 </section>
 
-<!-- Услуги -->
 <section id="servicesPage" class="page">
     <div class="breadcrumbs">
         <a href="#" onclick="showPage('home')">Главная</a> / 
@@ -2378,33 +2441,25 @@
         
         <div class="services-grid">
             <div class="service-item animate-on-scroll editable-text" data-page="services" data-field="service_1">
-                <div class="service-icon">
-                    <i class="fas fa-brain"></i>
-                </div>
+                <div class="service-icon"><i class="fas fa-brain"></i></div>
                 <h3>AI-аналитика трафика</h3>
                 <p>Анализ транспортных потоков с помощью нейросетей. Прогнозирование заторов и оптимизация светофорных циклов в реальном времени.</p>
             </div>
             
             <div class="service-item animate-on-scroll editable-text" data-page="services" data-field="service_2">
-                <div class="service-icon">
-                    <i class="fas fa-network-wired"></i>
-                </div>
+                <div class="service-icon"><i class="fas fa-network-wired"></i></div>
                 <h3>Интеграция систем</h3>
                 <p>Объединение всех элементов умной дороги в единую экосистему: светофоры, камеры, датчики, информационные табло.</p>
             </div>
             
             <div class="service-item animate-on-scroll editable-text" data-page="services" data-field="service_3">
-                <div class="service-icon">
-                    <i class="fas fa-cloud-upload-alt"></i>
-                </div>
+                <div class="service-icon"><i class="fas fa-cloud-upload-alt"></i></div>
                 <h3>Облачный мониторинг</h3>
                 <p>Удалённый контроль и управление всей инфраструктурой через облачную платформу. Доступ с любого устройства.</p>
             </div>
             
             <div class="service-item animate-on-scroll editable-text" data-page="services" data-field="service_4">
-                <div class="service-icon">
-                    <i class="fas fa-chart-line"></i>
-                </div>
+                <div class="service-icon"><i class="fas fa-chart-line"></i></div>
                 <h3>Big Data аналитика</h3>
                 <p>Сбор и анализ больших данных о дорожном движении. Выявление паттернов, прогнозирование и оптимизация.</p>
             </div>
@@ -2412,7 +2467,6 @@
     </div>
 </section>
 
-<!-- Контакты -->
 <section id="contactPage" class="page">
     <div class="breadcrumbs">
         <a href="#" onclick="showPage('home')">Главная</a> / 
@@ -2425,40 +2479,30 @@
         <div class="contact-container">
             <div class="contact-info animate-on-scroll">
                 <div class="contact-card">
-                    <div class="contact-icon">
-                        <i class="fas fa-building"></i>
-                    </div>
+                    <div class="contact-icon"><i class="fas fa-building"></i></div>
                     <p style="font-size: 1.2rem; color: var(--light);" class="editable-text" data-page="contact" data-field="contact_name"><strong>ООО «Смарт Роад»</strong></p>
                 </div>
                 
                 <div class="contact-card">
-                    <div class="contact-icon">
-                        <i class="fas fa-envelope"></i>
-                    </div>
+                    <div class="contact-icon"><i class="fas fa-envelope"></i></div>
                     <h3 class="editable-text" data-page="contact" data-field="contact_email_label">Электронная почта</h3>
                     <p class="editable-text" data-page="contact" data-field="contact_email">info@smartroad.ru</p>
                 </div>
                 
                 <div class="contact-card">
-                    <div class="contact-icon">
-                        <i class="fas fa-phone"></i>
-                    </div>
+                    <div class="contact-icon"><i class="fas fa-phone"></i></div>
                     <h3 class="editable-text" data-page="contact" data-field="contact_phone_label">Телефон</h3>
                     <p class="editable-text" data-page="contact" data-field="contact_phone">+7 495 777-55-33</p>
                 </div>
                 
                 <div class="contact-card">
-                    <div class="contact-icon">
-                        <i class="fas fa-map-marker-alt"></i>
-                    </div>
+                    <div class="contact-icon"><i class="fas fa-map-marker-alt"></i></div>
                     <h3 class="editable-text" data-page="contact" data-field="contact_address_label">Адрес</h3>
                     <p class="editable-text" data-page="contact" data-field="contact_address">г. Москва, ул. Тверская, д. 15, БЦ «Галерея», офис 801</p>
                 </div>
                 
                 <div class="contact-card">
-                    <div class="contact-icon">
-                        <i class="fas fa-clock"></i>
-                    </div>
+                    <div class="contact-icon"><i class="fas fa-clock"></i></div>
                     <h3 class="editable-text" data-page="contact" data-field="contact_hours_label">Режим работы</h3>
                     <p class="editable-text" data-page="contact" data-field="contact_hours">Пн–Пт: с 9:00 до 20:00<br>Сб: с 10:00 до 16:00<br>Техподдержка: 24/7</p>
                 </div>
@@ -2468,39 +2512,17 @@
                 <h3 style="margin-bottom: 1.5rem; color: var(--primary);" class="editable-text" data-page="contact" data-field="contact_form_title">Оставить заявку</h3>
                 
                 <div id="contactForm">
-                    <div class="form-group">
-                        <label>Ваше имя *</label>
-                        <input type="text" id="contactName" placeholder="Иван Иванов" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>Телефон *</label>
-                        <input type="tel" id="contactPhone" placeholder="+7 999 123-45-67" required>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>Email</label>
-                        <input type="email" id="contactEmail" placeholder="example@mail.ru">
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>Тема *</label>
-                        <select id="contactSubject">
-                            <option value="Заявка на продукт">Заявка на продукт</option>
-                            <option value="Заявка на услугу">Заявка на услугу</option>
-                            <option value="Консультация">Консультация</option>
-                            <option value="Другое">Другое</option>
-                        </select>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>Сообщение</label>
-                        <textarea id="contactMessage" rows="4" placeholder="Дополнительная информация, вопросы, пожелания..."></textarea>
-                    </div>
-                    
-                    <button class="btn" onclick="submitRequest()" style="width:100%">
-                        <i class="fas fa-paper-plane"></i> Отправить заявку
-                    </button>
+                    <div class="form-group"><label>Ваше имя *</label><input type="text" id="contactName" placeholder="Иван Иванов" required></div>
+                    <div class="form-group"><label>Телефон *</label><input type="tel" id="contactPhone" placeholder="+7 999 123-45-67" required></div>
+                    <div class="form-group"><label>Email</label><input type="email" id="contactEmail" placeholder="example@mail.ru"></div>
+                    <div class="form-group"><label>Тема *</label><select id="contactSubject">
+                        <option value="Заявка на продукт">Заявка на продукт</option>
+                        <option value="Заявка на услугу">Заявка на услугу</option>
+                        <option value="Консультация">Консультация</option>
+                        <option value="Другое">Другое</option>
+                    </select></div>
+                    <div class="form-group"><label>Сообщение</label><textarea id="contactMessage" rows="4" placeholder="Дополнительная информация, вопросы, пожелания..."></textarea></div>
+                    <button class="btn" onclick="submitRequest()" style="width:100%"><i class="fas fa-paper-plane"></i> Отправить заявку</button>
                 </div>
                 
                 <div id="contactSuccess" style="display:none">
@@ -2516,7 +2538,6 @@
     </div>
 </section>
 
-<!-- Корзина -->
 <section id="cartPage" class="page">
     <div class="main-content">
         <h2 class="section-title editable-text" data-page="cart" data-field="cart_title">Корзина</h2>
@@ -2531,31 +2552,15 @@
     </div>
 </section>
 
-<!-- Оформление заказа -->
 <section id="checkoutPage" class="page">
     <div class="main-content">
         <h2 class="section-title editable-text" data-page="checkout" data-field="checkout_title">Оформление заказа</h2>
         <div id="checkoutForm" style="max-width: 600px; margin: 0 auto;">
-            <div class="form-group">
-                <label>Ваше имя *</label>
-                <input type="text" id="checkoutName" placeholder="Иван Иванов">
-            </div>
-            <div class="form-group">
-                <label>Телефон *</label>
-                <input type="tel" id="checkoutPhone" placeholder="+7 999 123-45-67">
-            </div>
-            <div class="form-group">
-                <label>Email *</label>
-                <input type="email" id="checkoutEmail" placeholder="example@mail.ru">
-            </div>
-            <div class="form-group">
-                <label>Адрес доставки *</label>
-                <textarea id="checkoutAddress" rows="3" placeholder="Город, улица, дом, офис/квартира"></textarea>
-            </div>
-            <div class="form-group">
-                <label>Комментарий к заказу</label>
-                <textarea id="checkoutComment" rows="3" placeholder="Пожелания, уточнения..."></textarea>
-            </div>
+            <div class="form-group"><label>Ваше имя *</label><input type="text" id="checkoutName" placeholder="Иван Иванов"></div>
+            <div class="form-group"><label>Телефон *</label><input type="tel" id="checkoutPhone" placeholder="+7 999 123-45-67"></div>
+            <div class="form-group"><label>Email *</label><input type="email" id="checkoutEmail" placeholder="example@mail.ru"></div>
+            <div class="form-group"><label>Адрес доставки *</label><textarea id="checkoutAddress" rows="3" placeholder="Город, улица, дом, офис/квартира"></textarea></div>
+            <div class="form-group"><label>Комментарий к заказу</label><textarea id="checkoutComment" rows="3" placeholder="Пожелания, уточнения..."></textarea></div>
             <button class="btn" onclick="placeOrder()" style="width:100%">Подтвердить заказ</button>
         </div>
         <div id="checkoutSuccess" style="display:none; text-align:center; padding:3rem;">
@@ -2567,7 +2572,6 @@
     </div>
 </section>
 
-<!-- Личный кабинет -->
 <section id="accountPage" class="page">
     <div class="main-content">
         <h2 class="section-title editable-text" data-page="account" data-field="account_title">Личный кабинет</h2>
@@ -2575,7 +2579,6 @@
     </div>
 </section>
 
-<!-- Админ панель -->
 <section id="adminPage" class="page">
     <div class="main-content">
         <h2 class="section-title">Панель управления</h2>
@@ -2656,7 +2659,6 @@
 <div id="toast-container"></div>
 <div id="editModal" style="display:none;"></div>
 
-<!-- Футер -->
 <footer class="footer">
     <div class="footer-content">
         <div class="copyright">
@@ -2800,12 +2802,39 @@
                 });
             }
             toast(`Добро пожаловать, ${user.displayName || user.email}!`);
+            updateUserIndicator();
             renderAccount();
             showPage('account');
         } catch (error) {
             console.error('Google sign in error:', error);
         }
     };
+
+    // Функция обновления индикатора пользователя
+    function updateUserIndicator() {
+        const avatarEl = document.getElementById('userAvatarSmall');
+        const nameEl = document.getElementById('userNameSmall');
+        const logoutBtn = document.getElementById('logoutBtnSmall');
+        
+        if (currentUser) {
+            if (currentUser.photoURL) {
+                avatarEl.innerHTML = `<img src="${currentUser.photoURL}" style="width:100%;height:100%;object-fit:cover;">`;
+            } else {
+                const initial = (currentUser.displayName || currentUser.email || 'U')[0].toUpperCase();
+                avatarEl.innerHTML = initial;
+            }
+            
+            const displayName = currentUser.displayName || currentUser.email?.split('@')[0] || 'Пользователь';
+            nameEl.textContent = displayName;
+            nameEl.style.display = 'block';
+            logoutBtn.style.display = 'block';
+        } else {
+            avatarEl.innerHTML = '<i class="fas fa-user"></i>';
+            nameEl.textContent = '';
+            nameEl.style.display = 'none';
+            logoutBtn.style.display = 'none';
+        }
+    }
 
     window.toggleEditMode = function() {
         editModeActive = !editModeActive;
@@ -3496,6 +3525,8 @@
 
     async function renderAccount() {
         const container = document.getElementById('accountContent');
+        updateUserIndicator();
+        
         if (!currentUser) {
             container.innerHTML = `
                 <div class="auth-container">
@@ -3527,7 +3558,14 @@
                     </div>
                     <h3>${currentUser.displayName || 'Пользователь'}</h3>
                     <p style="color:var(--gray);">${currentUser.email}</p>
-                    <button class="btn btn-outline" onclick="logout()">Выйти</button>
+                    <div style="display: flex; gap: 12px; justify-content: center; margin-top: 16px;">
+                        <button class="btn btn-outline" onclick="logout()">
+                            <i class="fas fa-sign-out-alt"></i> Выйти
+                        </button>
+                        <button class="btn btn-outline" onclick="switchAccount()">
+                            <i class="fas fa-exchange-alt"></i> Сменить аккаунт
+                        </button>
+                    </div>
                 </div>
                 <h3>Мои заказы</h3>
                 ${orders.length === 0 ? '<p style="color:var(--gray);">Заказов пока нет</p>' : orders.map(o => `
@@ -3554,6 +3592,7 @@
         try {
             await signInWithEmailAndPassword(auth, document.getElementById('loginEmail').value, document.getElementById('loginPass').value);
             toast('Вход выполнен');
+            updateUserIndicator();
             showPage('account');
         } catch(e) {
             const errEl = document.getElementById('authError');
@@ -3596,9 +3635,21 @@
                 createdAt: serverTimestamp()
             });
             toast('Регистрация успешна!');
+            updateUserIndicator();
             showPage('account');
         } catch(e) {
             document.getElementById('regError').textContent = e.message;
+        }
+    };
+    
+    window.switchAccount = async function() {
+        if (confirm('Выйти из текущего аккаунта и войти в другой?')) {
+            await signOut(auth);
+            currentUser = null;
+            userProfile = null;
+            updateUserIndicator();
+            showPage('account');
+            toast('Вы вышли из аккаунта');
         }
     };
     
@@ -3606,7 +3657,10 @@
         await signOut(auth);
         currentUser = null;
         userProfile = null;
+        updateUserIndicator();
+        document.getElementById('adminNavBtn').style.display = 'none';
         showPage('home');
+        toast('Вы успешно вышли из аккаунта');
     };
 
     async function loadAdminData() {
@@ -3947,11 +4001,14 @@
             userProfile = userSnap.data();
             if (userProfile?.role === 'admin') {
                 document.getElementById('adminNavBtn').style.display = 'inline-block';
+            } else {
+                document.getElementById('adminNavBtn').style.display = 'none';
             }
         } else {
             userProfile = null;
             document.getElementById('adminNavBtn').style.display = 'none';
         }
+        updateUserIndicator();
         if (document.getElementById('accountPage').classList.contains('active')) renderAccount();
     });
 
