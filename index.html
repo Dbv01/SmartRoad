@@ -2248,24 +2248,22 @@
         <li><button class="nav-link" id="adminNavBtn" style="display:none" onclick="showPage('admin')">Админ</button></li>
     </ul>
     <div class="nav-actions">
-        <!-- Индикатор пользователя -->
-        <div id="userIndicator" style="display: flex; align-items: center; gap: 8px; cursor: pointer;" onclick="showPage('account')">
-            <div id="userAvatarSmall" style="width: 32px; height: 32px; border-radius: 50%; background: var(--gradient); display: flex; align-items: center; justify-content: center; overflow: hidden; font-size: 14px; color: white;">
-                <i class="fas fa-user"></i>
-            </div>
-            <span id="userNameSmall" style="color: var(--gray); font-size: 0.85rem; max-width: 100px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"></span>
-            <button id="logoutBtnSmall" style="display:none; background: none; border: none; color: var(--error); cursor: pointer; font-size: 0.8rem; padding: 4px 8px; border-radius: 4px;" onclick="event.stopPropagation(); logout()">
-                <i class="fas fa-sign-out-alt"></i>
-            </button>
-        </div>
-        <button class="nav-icon" onclick="showPage('account')" title="Личный кабинет">
+        
+    <!-- Индикатор пользователя (объединённая кнопка) -->
+    <div id="userIndicator" style="display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 4px 8px; background: rgba(255, 255, 255, 0.05); border-radius: 25px; transition: all 0.3s; border: 1px solid transparent;" onclick="showPage('account')" title="Личный кабинет">
+        <div id="userAvatarSmall" style="width: 32px; height: 32px; border-radius: 50%; background: var(--gradient); display: flex; align-items: center; justify-content: center; overflow: hidden; font-size: 14px; color: white;">
             <i class="fas fa-user"></i>
-        </button>
-        <button class="nav-icon" onclick="showPage('cart')" title="Корзина">
-            <i class="fas fa-shopping-cart"></i>
-            <span class="cart-badge" id="cartBadge">0</span>
+        </div>
+        <span id="userNameSmall" style="color: var(--gray); font-size: 0.85rem; max-width: 100px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"></span>
+        <button id="logoutBtnSmall" style="display:none; background: none; border: none; color: var(--error); cursor: pointer; font-size: 0.8rem; padding: 4px 8px; border-radius: 4px;" onclick="event.stopPropagation(); logout()">
+            <i class="fas fa-sign-out-alt"></i>
         </button>
     </div>
+    <button class="nav-icon" onclick="showPage('cart')" title="Корзина">
+        <i class="fas fa-shopping-cart"></i>
+        <span class="cart-badge" id="cartBadge">0</span>
+    </button>
+</div>
 </nav>
 
 <section id="homePage" class="page active">
