@@ -1,0 +1,4067 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>SmartRoad | Интеллектуальные Транспортные Системы</title>
+    
+    <!-- Фавиконка -->
+    <link rel="icon" type="image/png" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛣️</text></svg>">
+    
+    <!-- Иконочный шрифт -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Swiper -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    
+    <script>
+        // ТВОЙ НОВЫЙ FIREBASE КОНФИГ
+        const FIREBASE_CONFIG = {
+            apiKey: "AIzaSyAuEAZjtidEgnCywcrIBaYyW6fPqUwlieM",
+            authDomain: "smartroad-its.firebaseapp.com",
+            projectId: "smartroad-its",
+            storageBucket: "smartroad-its.firebasestorage.app",
+            messagingSenderId: "195764977795",
+            appId: "1:195764977795:web:e9208beaf54e038b9a5bb6"
+        };
+        console.log("SmartRoad Firebase config loaded");
+    </script>
+    
+    <style>
+        /* НОВАЯ ЦВЕТОВАЯ СХЕМА */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #FF6B35;
+            --primary-dark: #E55A25;
+            --secondary: #004E89;
+            --accent: #1A659E;
+            --light: #FFFFFF;
+            --dark: #0A1128;
+            --dark-card: rgba(10, 17, 40, 0.8);
+            --gray: #7B8BA0;
+            --card-bg: rgba(255, 255, 255, 0.03);
+            --card-border: rgba(255, 255, 255, 0.06);
+            --gradient: linear-gradient(135deg, #FF6B35 0%, #004E89 100%);
+            --success: #10b981;
+            --error: #ef4444;
+            --warning: #f59e0b;
+            --telegram: #0088cc;
+            --radius: 12px;
+            --radius-lg: 20px;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(135deg, #0A1128 0%, #1A1F3A 100%);
+            color: var(--light);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(255, 107, 53, 0.3); }
+            50% { box-shadow: 0 0 40px rgba(255, 107, 53, 0.6); }
+        }
+
+        /* Страницы */
+        .page {
+            display: none !important;
+            padding-top: 80px;
+            min-height: 100vh;
+            animation: fadeInUp 0.6s ease;
+        }
+
+        .page.active {
+            display: block !important;
+            visibility: visible !important;
+            opacity: 1 !important;
+            height: auto !important;
+            min-height: 100vh !important;
+            overflow: visible !important;
+        }
+        
+        .page.active * {
+            visibility: visible !important;
+            opacity: 1 !important;
+        }
+
+        /* Режим редактирования */
+        .edit-mode-active .editable-text {
+            outline: 2px dashed var(--primary);
+            outline-offset: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+        }
+        
+        .edit-mode-active .editable-text:hover {
+            outline: 2px solid var(--primary);
+            background: rgba(255, 107, 53, 0.1);
+        }
+        
+        .edit-mode-active .editable-text::after {
+            content: "✏️";
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background: var(--primary);
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: white;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        
+        .edit-mode-active .editable-text:hover::after {
+            opacity: 1;
+        }
+
+        /* Навигация */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 5%;
+            background: rgba(10, 17, 40, 0.95);
+            backdrop-filter: blur(20px);
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.3s;
+            height: 70px;
+        }
+
+        .navbar.hidden {
+            transform: translateY(-100%);
+        }
+
+        .navbar.scrolled {
+            padding: 0.7rem 5%;
+            box-shadow: 0 5px 30px rgba(0, 0, 0, 0.3);
+            background: rgba(10, 17, 40, 0.98);
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--light);
+            text-decoration: none;
+            cursor: pointer;
+            z-index: 1001;
+            letter-spacing: -0.5px;
+        }
+
+        .logo span {
+            color: var(--primary);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+            list-style: none;
+        }
+
+        .nav-link {
+            color: var(--gray);
+            font-weight: 500;
+            padding: 0.5rem 0;
+            transition: all 0.3s;
+            cursor: pointer;
+            background: none;
+            border: none;
+            font-size: 0.95rem;
+            position: relative;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--gradient);
+            transition: width 0.3s ease;
+        }
+
+        .nav-link:hover::after,
+        .nav-link.active::after {
+            width: 100%;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            color: var(--primary);
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 1.2rem;
+        }
+
+        .nav-icon {
+            background: none;
+            border: none;
+            color: var(--gray);
+            font-size: 1.2rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 50%;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .nav-icon:hover {
+            color: var(--primary);
+            background: rgba(255, 107, 53, 0.1);
+        }
+
+        .cart-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: var(--gradient);
+            color: white;
+            font-size: 0.7rem;
+            font-weight: bold;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--light);
+            font-size: 1.5rem;
+            cursor: pointer;
+            z-index: 1001;
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                position: fixed;
+                top: 70px;
+                left: 0;
+                width: 100%;
+                background: rgba(10, 17, 40, 0.98);
+                backdrop-filter: blur(20px);
+                flex-direction: column;
+                padding: 2rem;
+                transform: translateY(-100%);
+                opacity: 0;
+                visibility: hidden;
+                transition: all 0.3s ease;
+                z-index: 1000;
+                height: calc(100vh - 70px);
+                overflow-y: auto;
+                gap: 0;
+            }
+            
+            .nav-links.active {
+                transform: translateY(0);
+                opacity: 1;
+                visibility: visible;
+            }
+            
+            .nav-links li {
+                width: 100%;
+                margin-bottom: 1rem;
+            }
+            
+            .nav-link {
+                display: block;
+                width: 100%;
+                padding: 1rem;
+                text-align: center;
+                border-radius: 8px;
+                background: rgba(255, 255, 255, 0.03);
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+            }
+        }
+
+        /* ГЛАВНАЯ СТРАНИЦА */
+        .fullscreen-hero {
+            position: relative;
+            width: 100%;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .hero-image-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        .hero-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center;
+        }
+
+        .desktop-hero {
+            display: block;
+        }
+
+        .mobile-hero {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .desktop-hero {
+                display: none;
+            }
+            
+            .mobile-hero {
+                display: block;
+            }
+            
+            .fullscreen-hero {
+                height: 100vh;
+            }
+        }
+
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(10, 17, 40, 0.7) 0%, rgba(0, 78, 137, 0.6) 100%);
+            z-index: 2;
+        }
+
+        .hero-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 3;
+            text-align: center;
+            width: 90%;
+            max-width: 1200px;
+            padding: 2rem;
+        }
+
+        .hero-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 5rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #FF6B35 0%, #FFFFFF 50%, #1A659E 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            text-shadow: none;
+            line-height: 1.1;
+            letter-spacing: -1px;
+        }
+
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 2.8rem;
+                margin-bottom: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-title {
+                font-size: 2.2rem;
+            }
+        }
+
+        .hero-subtitle {
+            font-size: 1.6rem;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 3rem;
+            font-weight: 300;
+            letter-spacing: 1px;
+        }
+
+        @media (max-width: 768px) {
+            .hero-subtitle {
+                font-size: 1.2rem;
+                margin-bottom: 2rem;
+            }
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+                gap: 1rem;
+            }
+            
+            .hero-buttons .btn {
+                width: 100%;
+                max-width: 280px;
+            }
+        }
+
+        .scroll-down {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 3;
+            animation: bounce 2s infinite;
+        }
+
+        .scroll-down i {
+            font-size: 2.5rem;
+            color: var(--primary);
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .scroll-down i:hover {
+            color: var(--light);
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0) translateX(-50%);
+            }
+            40% {
+                transform: translateY(-10px) translateX(-50%);
+            }
+            60% {
+                transform: translateY(-5px) translateX(-50%);
+            }
+        }
+
+        /* Основной контент */
+        .main-content {
+            padding: 5rem 5%;
+            background: linear-gradient(180deg, #0A1128 0%, #0F1A3A 100%);
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 3rem 5%;
+            }
+        }
+
+        /* Анимации при скролле */
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .animate-on-scroll.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Улучшенные анимации */
+        .product-card,
+        .service-item,
+        .advantage-item,
+        .about-card {
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            animation-duration: 0.8s;
+            animation-fill-mode: both;
+        }
+
+        .product-card:hover {
+            transform: translateY(-10px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(255, 107, 53, 0.2);
+        }
+
+        .service-item:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(0, 78, 137, 0.3);
+        }
+
+        .advantage-item:hover {
+            transform: translateY(-5px) scale(1.03);
+            border-color: var(--primary);
+        }
+
+        /* Каталог */
+        .catalog-filters {
+            padding: 2rem 5%;
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            margin: 0 5% 2rem;
+            border-radius: var(--radius);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .filter-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .filter-btn {
+            padding: 0.7rem 1.5rem;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            color: var(--light);
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .filter-btn:hover {
+            background: rgba(255, 107, 53, 0.1);
+            border-color: var(--primary);
+        }
+
+        .filter-btn.active {
+            background: var(--gradient);
+            border-color: transparent;
+        }
+
+        .search-box {
+            position: relative;
+            flex-grow: 1;
+            max-width: 400px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 0.8rem 1rem 0.8rem 3rem;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 25px;
+            color: var(--light);
+            font-size: 1rem;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+        }
+
+        .catalog-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 2rem;
+            padding: 2rem 5%;
+        }
+
+        @media (max-width: 768px) {
+            .catalog-grid {
+                grid-template-columns: 1fr;
+                padding: 1rem;
+                gap: 1.5rem;
+            }
+        }
+
+        .product-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            cursor: pointer;
+        }
+
+        .product-image {
+            width: 100%;
+            height: 250px;
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.02);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            transition: transform 0.6s ease;
+            padding: 12px;
+        }
+
+        .product-card:hover .product-image img {
+            transform: scale(1.1);
+        }
+
+        .product-content {
+            padding: 1.5rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .product-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.4rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .product-price {
+            color: var(--light);
+            font-weight: 700;
+            font-size: 1.3rem;
+            margin: 1rem 0;
+        }
+
+        .product-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin: 1rem 0;
+        }
+
+        .product-tag {
+            background: rgba(255, 107, 53, 0.1);
+            color: var(--primary);
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+        }
+
+        /* Преимущества */
+        .advantages {
+            padding: 4rem 5%;
+            text-align: center;
+        }
+
+        @media (max-width: 768px) {
+            .advantages {
+                padding: 3rem 5%;
+            }
+        }
+
+        .advantages-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 768px) {
+            .advantages-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+        }
+
+        .advantage-item {
+            padding: 2rem;
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border-radius: var(--radius);
+            transition: all 0.3s;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .advantage-item i {
+            font-size: 3rem;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            margin-bottom: 1rem;
+        }
+
+        /* Заголовки */
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.8rem;
+            text-align: center;
+            margin-bottom: 3rem;
+            color: var(--light);
+            position: relative;
+            padding-bottom: 1rem;
+            letter-spacing: -0.5px;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: var(--gradient);
+            border-radius: 2px;
+        }
+
+        @media (max-width: 768px) {
+            .section-title {
+                font-size: 2.2rem;
+                margin-bottom: 2rem;
+            }
+        }
+
+        /* Кнопки */
+        .btn {
+            display: inline-block;
+            background: var(--gradient);
+            color: white;
+            padding: 1rem 2.5rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            font-family: 'Montserrat', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            animation: glow 2s infinite;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(255, 107, 53, 0.4);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+            animation: none;
+        }
+
+        .btn-outline:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .btn-sm {
+            padding: 0.5rem 1.2rem;
+            font-size: 0.85rem;
+        }
+
+        /* Футер */
+        .footer {
+            background: #050A18;
+            padding: 3rem 5% 1.5rem;
+            margin-top: 4rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        @media (max-width: 768px) {
+            .footer {
+                padding: 2rem 5% 1rem;
+                margin-top: 3rem;
+            }
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 768px) {
+            .footer-content {
+                flex-direction: column;
+                text-align: center;
+                gap: 1.5rem;
+            }
+        }
+
+        .copyright {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 1.5rem;
+            list-style: none;
+        }
+
+        @media (max-width: 768px) {
+            .footer-links {
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 1rem;
+            }
+        }
+
+        .footer-link {
+            color: var(--gray);
+            text-decoration: none;
+            transition: color 0.3s;
+            font-size: 0.9rem;
+        }
+
+        .footer-link:hover {
+            color: var(--primary);
+        }
+
+        /* Остальные стили */
+        .product-rating {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 12px;
+        }
+
+        .product-rating-stars {
+            color: var(--warning);
+            font-size: 14px;
+        }
+
+        .product-rating-count {
+            color: var(--gray);
+            font-size: 12px;
+        }
+
+        .product-gallery {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .main-swiper {
+            width: 100%;
+            border-radius: var(--radius);
+            overflow: hidden;
+            background: var(--card-bg);
+            aspect-ratio: 1;
+        }
+
+        .main-swiper .swiper-slide {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: zoom-in;
+        }
+
+        .main-swiper .swiper-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            padding: 20px;
+        }
+
+        .thumbs-swiper {
+            width: 100%;
+            padding: 4px 0;
+        }
+
+        .thumbs-swiper .swiper-slide {
+            width: 80px;
+            height: 80px;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 2px solid transparent;
+            cursor: pointer;
+            opacity: 0.6;
+            transition: all 0.3s;
+            background: var(--card-bg);
+        }
+
+        .thumbs-swiper .swiper-slide-thumb-active {
+            opacity: 1;
+            border-color: var(--primary);
+        }
+
+        .thumbs-swiper .swiper-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .zoom-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .zoom-modal.active {
+            display: flex;
+        }
+
+        .zoom-content {
+            position: relative;
+            width: 90vw;
+            height: 90vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .zoom-content img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .zoom-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 2rem;
+            color: white;
+            cursor: pointer;
+            z-index: 10;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            transition: all 0.3s;
+        }
+
+        .zoom-close:hover {
+            background: var(--error);
+            transform: rotate(90deg);
+        }
+
+        .zoom-prev,
+        .zoom-next {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 2rem;
+            color: white;
+            cursor: pointer;
+            z-index: 10;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            transition: all 0.3s;
+        }
+
+        .zoom-prev {
+            left: 20px;
+        }
+
+        .zoom-next {
+            right: 20px;
+        }
+
+        .zoom-prev:hover,
+        .zoom-next:hover {
+            background: var(--primary);
+        }
+
+        .pd-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 48px;
+        }
+
+        @media (max-width: 760px) {
+            .pd-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .pd-breadcrumb {
+            font-size: 13px;
+            color: var(--gray);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .pd-breadcrumb span {
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .pd-breadcrumb span:hover {
+            color: var(--primary);
+        }
+
+        .pd-cat-badge {
+            display: inline-block;
+            background: var(--card-bg);
+            color: var(--primary);
+            font-size: 11px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            padding: 4px 12px;
+            border-radius: 50px;
+            margin-bottom: 12px;
+        }
+
+        .pd-title {
+            font-size: clamp(28px, 4vw, 40px);
+            font-weight: 500;
+            margin-bottom: 12px;
+            line-height: 1.2;
+        }
+
+        .pd-price {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+
+        .pd-rating-summary {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .pd-rating-stars {
+            color: var(--warning);
+            font-size: 18px;
+        }
+
+        .pd-rating-count {
+            color: var(--gray);
+            font-size: 14px;
+        }
+
+        .pd-desc {
+            font-size: 15px;
+            color: var(--gray);
+            line-height: 1.8;
+            margin-bottom: 28px;
+        }
+
+        .pd-stock {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 24px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .pd-stock.in {
+            color: var(--success);
+        }
+
+        .pd-stock.out {
+            color: var(--error);
+        }
+
+        .qty-ctrl {
+            display: flex;
+            align-items: center;
+            gap: 0;
+            border: 1px solid var(--card-border);
+            border-radius: 50px;
+            overflow: hidden;
+            width: fit-content;
+            margin-bottom: 20px;
+        }
+
+        .qty-btn {
+            background: none;
+            border: none;
+            width: 40px;
+            height: 40px;
+            font-size: 18px;
+            cursor: pointer;
+            color: var(--light);
+            transition: background 0.2s;
+        }
+
+        .qty-btn:hover {
+            background: var(--card-bg);
+        }
+
+        .qty-num {
+            width: 48px;
+            text-align: center;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .pd-add-btn {
+            width: 100%;
+            padding: 16px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 50px;
+            border: none;
+            background: var(--gradient);
+            color: white;
+            cursor: pointer;
+            margin-bottom: 12px;
+            transition: all 0.2s;
+        }
+
+        .pd-add-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 20px rgba(255, 107, 53, 0.3);
+        }
+
+        /* Отзывы */
+        .reviews-section {
+            margin-top: 64px;
+        }
+
+        .reviews-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .reviews-sort {
+            display: flex;
+            gap: 8px;
+        }
+
+        .sort-btn {
+            padding: 8px 16px;
+            background: transparent;
+            border: 1px solid var(--card-border);
+            border-radius: 50px;
+            color: var(--gray);
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 13px;
+        }
+
+        .sort-btn.active {
+            background: var(--gradient);
+            color: white;
+            border-color: transparent;
+        }
+
+        .review-card {
+            background: var(--card-bg);
+            border-radius: var(--radius);
+            padding: 20px;
+            margin-bottom: 16px;
+            border: 1px solid var(--card-border);
+        }
+
+        .review-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .review-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: white;
+            font-size: 16px;
+            overflow: hidden;
+        }
+
+        .review-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .review-info {
+            flex: 1;
+        }
+
+        .review-name {
+            font-weight: 600;
+            font-size: 15px;
+        }
+
+        .review-date {
+            font-size: 12px;
+            color: var(--gray);
+        }
+
+        .review-stars {
+            color: var(--warning);
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .review-text {
+            font-size: 14px;
+            color: var(--gray);
+            line-height: 1.7;
+            margin-bottom: 12px;
+        }
+
+        .review-images {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin: 12px 0;
+        }
+
+        .review-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 8px;
+            object-fit: cover;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .review-image:hover {
+            transform: scale(1.05);
+        }
+
+        .review-actions {
+            display: flex;
+            gap: 16px;
+            margin-top: 8px;
+        }
+
+        .review-like {
+            color: var(--gray);
+            cursor: pointer;
+            transition: color 0.2s;
+            font-size: 13px;
+        }
+
+        .review-like:hover {
+            color: var(--primary);
+        }
+
+        .review-like i {
+            margin-right: 4px;
+        }
+
+        .admin-reply {
+            margin-top: 12px;
+            padding: 12px 16px;
+            background: rgba(255, 107, 53, 0.05);
+            border-radius: 12px;
+            border-left: 3px solid var(--primary);
+        }
+
+        .admin-reply-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 6px;
+        }
+
+        .admin-reply-badge {
+            font-size: 11px;
+            background: var(--primary);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 50px;
+        }
+
+        .admin-reply-text {
+            font-size: 13px;
+            color: var(--gray);
+        }
+
+        .review-form {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius);
+            padding: 24px;
+            margin-top: 24px;
+        }
+
+        .rating-input {
+            display: flex;
+            gap: 8px;
+            margin: 12px 0;
+        }
+
+        .rating-star {
+            font-size: 28px;
+            color: var(--gray);
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .rating-star.active {
+            color: var(--warning);
+        }
+
+        .rating-star:hover {
+            color: var(--warning);
+        }
+
+        .image-upload-area {
+            border: 2px dashed var(--card-border);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            margin: 16px 0;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+
+        .image-upload-area:hover {
+            border-color: var(--primary);
+        }
+
+        .image-preview {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 12px;
+        }
+
+        .preview-item {
+            position: relative;
+            width: 80px;
+            height: 80px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .preview-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .preview-remove {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            background: var(--error);
+            color: white;
+            border: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .breadcrumbs {
+            padding: 1rem 5%;
+            background: var(--card-bg);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            font-size: 0.9rem;
+        }
+
+        .breadcrumbs a {
+            color: var(--gray);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .breadcrumbs a:hover {
+            color: var(--primary);
+        }
+
+        .breadcrumbs span {
+            color: var(--light);
+            font-weight: 500;
+        }
+
+        .back-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 50px;
+            height: 50px;
+            background: var(--gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+            z-index: 999;
+            box-shadow: 0 5px 15px rgba(255, 107, 53, 0.3);
+        }
+
+        .back-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .back-to-top:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(255, 107, 53, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            .back-to-top {
+                bottom: 20px;
+                right: 20px;
+                width: 45px;
+                height: 45px;
+            }
+        }
+
+        .contact-section {
+            padding: 4rem 5%;
+        }
+
+        .contact-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+        }
+
+        @media (max-width: 768px) {
+            .contact-container {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+        }
+
+        .contact-info {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: var(--radius);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .contact-form-container {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: var(--radius);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .contact-card {
+            margin-bottom: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .contact-card:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .contact-icon {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--light);
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 8px;
+            color: var(--light);
+            font-size: 1rem;
+            font-family: 'Montserrat', sans-serif;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+        }
+
+        .success-message {
+            text-align: center;
+            padding: 3rem 1rem;
+        }
+
+        .success-message i {
+            font-size: 4rem;
+            color: var(--success);
+            margin-bottom: 1.5rem;
+        }
+
+        .about-section {
+            padding: 4rem 5%;
+        }
+
+        .about-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .about-card {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: var(--radius);
+            margin-bottom: 2rem;
+            border-left: 4px solid var(--primary);
+        }
+
+        .services-section {
+            padding: 4rem 5%;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 768px) {
+            .services-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+        }
+
+        .service-item {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: var(--radius);
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .service-icon {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .cart-layout {
+            display: grid;
+            grid-template-columns: 1fr 360px;
+            gap: 2rem;
+        }
+
+        @media (max-width:768px) {
+            .cart-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .cart-item {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            padding: 1rem;
+            border-radius: var(--radius);
+            margin-bottom: 1rem;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+            border: 1px solid var(--card-border);
+        }
+
+        .cart-summary {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            padding: 1.5rem;
+            border-radius: var(--radius);
+            position: sticky;
+            top: 100px;
+            border: 1px solid var(--card-border);
+        }
+
+        .admin-header {
+            background: var(--dark-card);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-lg);
+            padding: 8px;
+            margin-bottom: 32px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px;
+            position: sticky;
+            top: 90px;
+            z-index: 90;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+
+        .admin-tab {
+            padding: 12px 20px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--gray);
+            background: transparent;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            letter-spacing: 0.3px;
+        }
+
+        .admin-tab i {
+            font-size: 16px;
+            opacity: 0.7;
+        }
+
+        .admin-tab:hover {
+            color: var(--light);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .admin-tab.active {
+            background: var(--gradient);
+            color: white;
+            box-shadow: 0 4px 12px rgba(255, 107, 53, 0.2);
+        }
+
+        .admin-tab.active i {
+            opacity: 1;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-lg);
+            padding: 28px 24px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--gradient);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(255, 107, 53, 0.3);
+            box-shadow: 0 12px 24px -8px rgba(0, 0, 0, 0.3);
+        }
+
+        .stat-card:hover::before {
+            opacity: 1;
+        }
+
+        .stat-label {
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--gray);
+            margin-bottom: 12px;
+            font-weight: 500;
+        }
+
+        .stat-value {
+            font-family: 'Playfair Display', serif;
+            font-size: 42px;
+            font-weight: 600;
+            background: linear-gradient(135deg, #fff 0%, var(--primary) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            line-height: 1.2;
+        }
+
+        .admin-toolbar {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            margin-bottom: 28px;
+            flex-wrap: wrap;
+        }
+
+        .admin-toolbar h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 28px;
+            font-weight: 500;
+            color: var(--light);
+            margin-right: auto;
+        }
+
+        .admin-panel {
+            display: none;
+            animation: fadeInUp 0.4s ease;
+        }
+
+        .admin-panel.active {
+            display: block;
+        }
+
+        .scroll-table {
+            overflow-x: auto;
+            border-radius: var(--radius-lg);
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.02) 0%, rgba(255, 255, 255, 0.01) 100%);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--card-border);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 800px;
+        }
+
+        table th {
+            text-align: left;
+            padding: 16px 20px;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+            color: var(--gray);
+            font-weight: 600;
+            background: rgba(0, 0, 0, 0.2);
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        table td {
+            padding: 16px 20px;
+            font-size: 14px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            vertical-align: middle;
+            color: var(--light);
+        }
+
+        table tr:last-child td {
+            border-bottom: none;
+        }
+
+        table tr:hover td {
+            background: rgba(255, 107, 53, 0.05);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 50px;
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+            text-transform: uppercase;
+        }
+
+        .status-new {
+            background: rgba(59, 130, 246, 0.15);
+            color: #60a5fa;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+
+        .status-processing {
+            background: rgba(245, 158, 11, 0.15);
+            color: #fbbf24;
+            border: 1px solid rgba(245, 158, 11, 0.3);
+        }
+
+        .status-completed {
+            background: rgba(16, 185, 129, 0.15);
+            color: #34d399;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .status-cancelled {
+            background: rgba(239, 68, 68, 0.15);
+            color: #f87171;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        .editor-info-card {
+            background: linear-gradient(145deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0.01) 100%);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--card-border);
+            border-radius: var(--radius-lg);
+            padding: 28px;
+            margin-bottom: 24px;
+        }
+
+        .editor-info-card h4 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: var(--primary);
+        }
+
+        .editor-info-card .step {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .editor-info-card .step-number {
+            width: 28px;
+            height: 28px;
+            background: var(--gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: 600;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .editor-status {
+            margin-top: 24px;
+            padding: 16px 24px;
+            background: rgba(255, 107, 53, 0.08);
+            border: 1px solid rgba(255, 107, 53, 0.2);
+            border-radius: 12px;
+            display: none;
+        }
+
+        .editor-status.active {
+            display: block;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                border-color: rgba(255, 107, 53, 0.2);
+            }
+            50% {
+                border-color: rgba(255, 107, 53, 0.5);
+            }
+        }
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 24px;
+            backdrop-filter: blur(4px);
+        }
+
+        .modal-box {
+            background: var(--dark-card);
+            backdrop-filter: blur(20px);
+            border-radius: var(--radius-lg);
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 32px;
+            border: 1px solid var(--card-border);
+        }
+
+        .modal-title {
+            font-size: 24px;
+            margin-bottom: 24px;
+            color: var(--primary);
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            margin-top: 24px;
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--gradient);
+            color: white;
+            padding: 1rem 1.8rem;
+            border-radius: 50px;
+            z-index: 2001;
+            animation: slideIn 0.3s ease;
+            box-shadow: 0 10px 30px rgba(255, 107, 53, 0.3);
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        .auth-container {
+            max-width: 420px;
+            margin: 0 auto;
+        }
+
+        .auth-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            padding: 2.5rem;
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--card-border);
+        }
+
+        .auth-card h3 {
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            color: var(--primary);
+        }
+
+        .btn-google {
+            width: 100%;
+            padding: 14px 20px;
+            background: white;
+            color: #333;
+            border: none;
+            border-radius: 50px;
+            font-weight: 500;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .btn-google:hover {
+            background: #f5f5f5;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .btn-google i {
+            font-size: 20px;
+            color: #4285F4;
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            margin: 24px 0;
+            color: var(--gray);
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        .divider span {
+            padding: 0 16px;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .auth-footer {
+            text-align: center;
+            margin-top: 20px;
+            color: var(--gray);
+        }
+
+        .auth-footer a {
+            color: var(--primary);
+            cursor: pointer;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .user-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            overflow: hidden;
+        }
+
+        .user-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .user-avatar i {
+            font-size: 30px;
+            color: white;
+        }
+
+        .image-gallery-input {
+            margin-top: 16px;
+        }
+
+        .gallery-preview {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 12px;
+        }
+
+        .gallery-preview-item {
+            position: relative;
+            width: 80px;
+            height: 80px;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 2px solid var(--card-border);
+        }
+
+        .gallery-preview-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .gallery-preview-item .remove-btn {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            background: var(--error);
+            color: white;
+            border: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .fade-in {
+            animation: fadeIn 1s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width:768px) {
+            .catalog-grid { grid-template-columns: 1fr; }
+            .advantages-grid { grid-template-columns: 1fr; }
+            .services-grid { grid-template-columns: 1fr; }
+            .auth-card { padding: 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div id="loadingScreen" style="position:fixed; inset:0; background:var(--dark); display:flex; align-items:center; justify-content:center; z-index:9999;">
+    <div style="text-align:center">
+        <div style="width:60px; height:60px; border:3px solid rgba(255,107,53,0.2); border-top-color:var(--primary); border-radius:50%; animation:spin 1s linear infinite; margin:0 auto 1rem;"></div>
+        <p style="color:var(--primary); letter-spacing:2px; font-weight:600;">SMART ROAD</p>
+    </div>
+</div>
+
+<!-- Кнопка "Наверх" -->
+<div class="back-to-top" id="backToTop" onclick="scrollToTop()">
+    <i class="fas fa-chevron-up"></i>
+</div>
+
+<!-- Zoom Modal -->
+<div class="zoom-modal" id="zoomModal" onclick="closeZoom()">
+    <div class="zoom-close" onclick="closeZoom()"><i class="fas fa-times"></i></div>
+    <div class="zoom-prev" onclick="event.stopPropagation();zoomPrev()"><i class="fas fa-chevron-left"></i></div>
+    <div class="zoom-next" onclick="event.stopPropagation();zoomNext()"><i class="fas fa-chevron-right"></i></div>
+    <div class="zoom-content" onclick="event.stopPropagation()">
+        <img id="zoomImage" src="" alt="">
+    </div>
+</div>
+
+<!-- Навигация -->
+<nav class="navbar" id="navbar">
+    <a class="logo" onclick="showPage('home')">
+        <span>SMART</span>ROAD
+    </a>
+    
+    <button class="mobile-menu-btn" onclick="toggleMenu()">
+        <i class="fas fa-bars"></i>
+    </button>
+    
+    <ul class="nav-links" id="navLinks">
+        <li><button class="nav-link active" onclick="showPage('home')">Главная</button></li>
+        <li><button class="nav-link" onclick="showPage('about')">О компании</button></li>
+        <li><button class="nav-link" onclick="showPage('catalog')">Каталог</button></li>
+        <li><button class="nav-link" onclick="showPage('services')">Услуги</button></li>
+        <li><button class="nav-link" onclick="showPage('contact')">Контакты</button></li>
+        <li><button class="nav-link" id="adminNavBtn" style="display:none" onclick="showPage('admin')">Админ</button></li>
+    </ul>
+    <div class="nav-actions">
+        <button class="nav-icon" onclick="showPage('account')"><i class="fas fa-user"></i></button>
+        <button class="nav-icon" onclick="showPage('cart')"><i class="fas fa-shopping-cart"></i><span class="cart-badge" id="cartBadge">0</span></button>
+    </div>
+</nav>
+
+<!-- Главная страница -->
+<section id="homePage" class="page active">
+    <div class="fullscreen-hero">
+        <div class="hero-image-container">
+            <img src="https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?w=1920&q=80" alt="Умные дороги будущего" class="hero-image desktop-hero" 
+                 onerror="this.onerror=null; this.src='https://placehold.co/1920x1080/0A1128/FF6B35?text=SMART+ROAD';">
+            
+            <img src="https://images.unsplash.com/photo-1494522855154-9297ac14b55f?w=768&q=80" alt="Умные дороги" class="hero-image mobile-hero" 
+                 onerror="this.onerror=null; this.src='https://placehold.co/768x1024/0A1128/FF6B35?text=SMART+ROAD';">
+            
+            <div class="hero-overlay"></div>
+        </div>
+        
+        <div class="hero-content fade-in">
+            <h1 class="hero-title editable-text" data-page="home" data-field="hero_title">Smart Road Systems</h1>
+            <p class="hero-subtitle editable-text" data-page="home" data-field="hero_subtitle">Инновационные технологии для умных дорог и безопасного движения</p>
+            
+            <div class="hero-buttons">
+                <button class="btn" onclick="showPage('catalog')">
+                    <i class="fas fa-microchip"></i> Наши продукты
+                </button>
+                <button class="btn btn-outline" onclick="showPage('services')">
+                    <i class="fas fa-cogs"></i> Наши услуги
+                </button>
+                <button class="btn btn-outline" onclick="showPage('contact')">
+                    <i class="fas fa-phone"></i> Связаться с нами
+                </button>
+            </div>
+        </div>
+        
+        <div class="scroll-down" onclick="scrollToContent()">
+            <i class="fas fa-chevron-down"></i>
+        </div>
+    </div>
+    
+    <div class="main-content" id="mainContent">
+        <div class="advantages">
+            <h2 class="section-title animate-on-scroll editable-text" data-page="home" data-field="advantages_title">Почему выбирают нас</h2>
+            <div class="advantages-grid">
+                <div class="advantage-item animate-on-scroll editable-text" data-page="home" data-field="advantage_1">
+                    <i class="fas fa-shield-alt"></i>
+                    <h3>10 лет на рынке</h3>
+                    <p>С 2015 года внедряем интеллектуальные транспортные системы по всей России. Более 200 успешных проектов.</p>
+                </div>
+                <div class="advantage-item animate-on-scroll editable-text" data-page="home" data-field="advantage_2">
+                    <i class="fas fa-robot"></i>
+                    <h3>Искусственный интеллект</h3>
+                    <p>Используем нейросети и машинное обучение для анализа трафика и предотвращения аварийных ситуаций.</p>
+                </div>
+                <div class="advantage-item animate-on-scroll editable-text" data-page="home" data-field="advantage_3">
+                    <i class="fas fa-certificate"></i>
+                    <h3>Сертификация</h3>
+                    <p>Все решения сертифицированы по ГОСТ Р и международным стандартам ISO 9001, ISO 14001.</p>
+                </div>
+                <div class="advantage-item animate-on-scroll editable-text" data-page="home" data-field="advantage_4">
+                    <i class="fas fa-headset"></i>
+                    <h3>Поддержка 24/7</h3>
+                    <p>Круглосуточная техническая поддержка и мониторинг работоспособности всех систем.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="about-section">
+            <h2 class="section-title animate-on-scroll editable-text" data-page="home" data-field="about_preview_title">О компании Smart Road</h2>
+            <div class="about-content">
+                <div class="about-card animate-on-scroll editable-text" data-page="home" data-field="about_preview_text">
+                    <p>Компания <strong>Smart Road</strong> — ведущий разработчик интеллектуальных транспортных систем нового поколения. Мы создаём технологии, которые превращают обычные дороги в умные магистрали будущего. Наша команда из 60+ специалистов работает над проектами любой сложности — от локальных перекрёстков до интеллектуальных транспортных сетей целых регионов.</p>
+                    <button class="btn" style="margin-top: 1.5rem;" onclick="showPage('about')">
+                        <i class="fas fa-info-circle"></i> Подробнее о компании
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- О компании -->
+<section id="aboutPage" class="page">
+    <div class="breadcrumbs">
+        <a href="#" onclick="showPage('home')">Главная</a> / 
+        <span>О компании</span>
+    </div>
+    
+    <div class="about-section">
+        <h2 class="section-title editable-text" data-page="about" data-field="about_title">О компании Smart Road</h2>
+        
+        <div class="about-content">
+            <div class="about-card animate-on-scroll">
+                <h3 class="editable-text" data-page="about" data-field="about_section1_title">Кто мы</h3>
+                <p class="editable-text" data-page="about" data-field="about_section1_text">ООО «Смарт Роад» — российский разработчик и интегратор интеллектуальных транспортных систем. С 2015 года мы внедряем передовые технологии для повышения безопасности и эффективности дорожного движения.</p>
+            </div>
+            
+            <div class="about-card animate-on-scroll">
+                <h3 class="editable-text" data-page="about" data-field="about_section2_title">Наша миссия</h3>
+                <p class="editable-text" data-page="about" data-field="about_section2_text">Создавать умные дороги, которые спасают жизни и делают передвижение комфортным. Мы используем искусственный интеллект и большие данные для предотвращения ДТП до того, как они произойдут.</p>
+            </div>
+            
+            <div class="about-card animate-on-scroll">
+                <h3 class="editable-text" data-page="about" data-field="about_section3_title">Наши ценности</h3>
+                <p class="editable-text" data-page="about" data-field="about_section3_text">
+                    • Инновации — мы внедряем технологии завтрашнего дня уже сегодня<br>
+                    • Безопасность — каждая наша система спасает жизни<br>
+                    • Надёжность — наши решения работают 24/7/365<br>
+                    • Экологичность — мы снижаем выбросы CO2 оптимизируя трафик<br>
+                    • Партнёрство — мы растем вместе с нашими клиентами
+                </p>
+            </div>
+            
+            <div class="about-card animate-on-scroll">
+                <h3 class="editable-text" data-page="about" data-field="about_section4_title">Наша команда</h3>
+                <p class="editable-text" data-page="about" data-field="about_section4_text">В штате компании более 60 специалистов: AI-инженеры, разработчики нейросетей, проектировщики умных дорог, монтажные бригады. Наш технический директор — кандидат технических наук с 15-летним опытом в транспортной телематике.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Каталог -->
+<section id="catalogPage" class="page">
+    <div class="breadcrumbs">
+        <a href="#" onclick="showPage('home')">Главная</a> / 
+        <span>Каталог</span>
+    </div>
+    
+    <h2 class="section-title editable-text" data-page="catalog" data-field="catalog_title" style="margin-top: 1rem;">Наши продукты</h2>
+    
+    <div class="catalog-filters animate-on-scroll">
+        <div class="filter-container">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="Поиск по каталогу...">
+            </div>
+            
+            <div class="price-filter">
+                <input type="number" id="priceMin" placeholder="От" min="0">
+                <span>—</span>
+                <input type="number" id="priceMax" placeholder="До" min="0">
+            </div>
+            
+            <select class="sort-select" id="sortSelect">
+                <option value="default">По умолчанию</option>
+                <option value="price_asc">Цена: по возрастанию</option>
+                <option value="price_desc">Цена: по убыванию</option>
+                <option value="rating">По рейтингу</option>
+                <option value="newest">Новинки</option>
+            </select>
+            
+            <label style="display: flex; align-items: center; gap: 8px; color: var(--gray);">
+                <input type="checkbox" id="inStockOnly"> Только в наличии
+            </label>
+            
+            <div id="categoryFilters" style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+                <button class="filter-btn active" onclick="filterProducts('all')">Все</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="catalog-grid" id="catalogGrid">
+        <div style="text-align: center; grid-column: 1/-1; padding: 3rem; color: var(--gray);">Загрузка товаров...</div>
+    </div>
+</section>
+
+<!-- Страница товара -->
+<section id="productPage" class="page">
+    <div class="page-wrap" id="productDetailContent" style="max-width: 1200px; margin: 0 auto; padding: 48px 24px;"></div>
+</section>
+
+<!-- Услуги -->
+<section id="servicesPage" class="page">
+    <div class="breadcrumbs">
+        <a href="#" onclick="showPage('home')">Главная</a> / 
+        <span>Услуги</span>
+    </div>
+    
+    <div class="services-section">
+        <h2 class="section-title editable-text" data-page="services" data-field="services_title">Наши услуги</h2>
+        
+        <div class="services-grid">
+            <div class="service-item animate-on-scroll editable-text" data-page="services" data-field="service_1">
+                <div class="service-icon">
+                    <i class="fas fa-brain"></i>
+                </div>
+                <h3>AI-аналитика трафика</h3>
+                <p>Анализ транспортных потоков с помощью нейросетей. Прогнозирование заторов и оптимизация светофорных циклов в реальном времени.</p>
+            </div>
+            
+            <div class="service-item animate-on-scroll editable-text" data-page="services" data-field="service_2">
+                <div class="service-icon">
+                    <i class="fas fa-network-wired"></i>
+                </div>
+                <h3>Интеграция систем</h3>
+                <p>Объединение всех элементов умной дороги в единую экосистему: светофоры, камеры, датчики, информационные табло.</p>
+            </div>
+            
+            <div class="service-item animate-on-scroll editable-text" data-page="services" data-field="service_3">
+                <div class="service-icon">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                </div>
+                <h3>Облачный мониторинг</h3>
+                <p>Удалённый контроль и управление всей инфраструктурой через облачную платформу. Доступ с любого устройства.</p>
+            </div>
+            
+            <div class="service-item animate-on-scroll editable-text" data-page="services" data-field="service_4">
+                <div class="service-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <h3>Big Data аналитика</h3>
+                <p>Сбор и анализ больших данных о дорожном движении. Выявление паттернов, прогнозирование и оптимизация.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Контакты -->
+<section id="contactPage" class="page">
+    <div class="breadcrumbs">
+        <a href="#" onclick="showPage('home')">Главная</a> / 
+        <span>Контакты</span>
+    </div>
+    
+    <div class="contact-section">
+        <h2 class="section-title editable-text" data-page="contact" data-field="contact_title">Свяжитесь с нами</h2>
+        
+        <div class="contact-container">
+            <div class="contact-info animate-on-scroll">
+                <div class="contact-card">
+                    <div class="contact-icon">
+                        <i class="fas fa-building"></i>
+                    </div>
+                    <p style="font-size: 1.2rem; color: var(--light);" class="editable-text" data-page="contact" data-field="contact_name"><strong>ООО «Смарт Роад»</strong></p>
+                </div>
+                
+                <div class="contact-card">
+                    <div class="contact-icon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <h3 class="editable-text" data-page="contact" data-field="contact_email_label">Электронная почта</h3>
+                    <p class="editable-text" data-page="contact" data-field="contact_email">info@smartroad.ru</p>
+                </div>
+                
+                <div class="contact-card">
+                    <div class="contact-icon">
+                        <i class="fas fa-phone"></i>
+                    </div>
+                    <h3 class="editable-text" data-page="contact" data-field="contact_phone_label">Телефон</h3>
+                    <p class="editable-text" data-page="contact" data-field="contact_phone">+7 495 777-55-33</p>
+                </div>
+                
+                <div class="contact-card">
+                    <div class="contact-icon">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <h3 class="editable-text" data-page="contact" data-field="contact_address_label">Адрес</h3>
+                    <p class="editable-text" data-page="contact" data-field="contact_address">г. Москва, ул. Тверская, д. 15, БЦ «Галерея», офис 801</p>
+                </div>
+                
+                <div class="contact-card">
+                    <div class="contact-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <h3 class="editable-text" data-page="contact" data-field="contact_hours_label">Режим работы</h3>
+                    <p class="editable-text" data-page="contact" data-field="contact_hours">Пн–Пт: с 9:00 до 20:00<br>Сб: с 10:00 до 16:00<br>Техподдержка: 24/7</p>
+                </div>
+            </div>
+            
+            <div class="contact-form-container animate-on-scroll">
+                <h3 style="margin-bottom: 1.5rem; color: var(--primary);" class="editable-text" data-page="contact" data-field="contact_form_title">Оставить заявку</h3>
+                
+                <div id="contactForm">
+                    <div class="form-group">
+                        <label>Ваше имя *</label>
+                        <input type="text" id="contactName" placeholder="Иван Иванов" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Телефон *</label>
+                        <input type="tel" id="contactPhone" placeholder="+7 999 123-45-67" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="contactEmail" placeholder="example@mail.ru">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Тема *</label>
+                        <select id="contactSubject">
+                            <option value="Заявка на продукт">Заявка на продукт</option>
+                            <option value="Заявка на услугу">Заявка на услугу</option>
+                            <option value="Консультация">Консультация</option>
+                            <option value="Другое">Другое</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Сообщение</label>
+                        <textarea id="contactMessage" rows="4" placeholder="Дополнительная информация, вопросы, пожелания..."></textarea>
+                    </div>
+                    
+                    <button class="btn" onclick="submitRequest()" style="width:100%">
+                        <i class="fas fa-paper-plane"></i> Отправить заявку
+                    </button>
+                </div>
+                
+                <div id="contactSuccess" style="display:none">
+                    <div class="success-message">
+                        <i class="fas fa-check-circle"></i>
+                        <h3>Заявка отправлена!</h3>
+                        <p>С вами свяжутся в ближайшее время.</p>
+                        <button class="btn btn-outline" onclick="resetContactForm()">Отправить ещё</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Корзина -->
+<section id="cartPage" class="page">
+    <div class="main-content">
+        <h2 class="section-title editable-text" data-page="cart" data-field="cart_title">Корзина</h2>
+        <div class="cart-layout">
+            <div id="cartItems"></div>
+            <div class="cart-summary">
+                <h3 class="editable-text" data-page="cart" data-field="cart_summary_title">Итого заказа</h3>
+                <div id="cartTotal" style="font-size: 2rem; color: var(--primary); margin: 1rem 0;">0 ₽</div>
+                <button class="btn" onclick="checkout()" style="width:100%">Оформить заказ</button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Оформление заказа -->
+<section id="checkoutPage" class="page">
+    <div class="main-content">
+        <h2 class="section-title editable-text" data-page="checkout" data-field="checkout_title">Оформление заказа</h2>
+        <div id="checkoutForm" style="max-width: 600px; margin: 0 auto;">
+            <div class="form-group">
+                <label>Ваше имя *</label>
+                <input type="text" id="checkoutName" placeholder="Иван Иванов">
+            </div>
+            <div class="form-group">
+                <label>Телефон *</label>
+                <input type="tel" id="checkoutPhone" placeholder="+7 999 123-45-67">
+            </div>
+            <div class="form-group">
+                <label>Email *</label>
+                <input type="email" id="checkoutEmail" placeholder="example@mail.ru">
+            </div>
+            <div class="form-group">
+                <label>Адрес доставки *</label>
+                <textarea id="checkoutAddress" rows="3" placeholder="Город, улица, дом, офис/квартира"></textarea>
+            </div>
+            <div class="form-group">
+                <label>Комментарий к заказу</label>
+                <textarea id="checkoutComment" rows="3" placeholder="Пожелания, уточнения..."></textarea>
+            </div>
+            <button class="btn" onclick="placeOrder()" style="width:100%">Подтвердить заказ</button>
+        </div>
+        <div id="checkoutSuccess" style="display:none; text-align:center; padding:3rem;">
+            <i class="fas fa-check-circle" style="font-size:4rem; color:var(--success); margin-bottom:1rem;"></i>
+            <h3>Заказ оформлен!</h3>
+            <p>С вами свяжутся для подтверждения.</p>
+            <button class="btn" onclick="showPage('home')">На главную</button>
+        </div>
+    </div>
+</section>
+
+<!-- Личный кабинет -->
+<section id="accountPage" class="page">
+    <div class="main-content">
+        <h2 class="section-title editable-text" data-page="account" data-field="account_title">Личный кабинет</h2>
+        <div id="accountContent"></div>
+    </div>
+</section>
+
+<!-- Админ панель -->
+<section id="adminPage" class="page">
+    <div class="main-content">
+        <h2 class="section-title">Панель управления</h2>
+        
+        <div class="admin-header">
+            <button class="admin-tab active" onclick="showAdminPanel('dashboard',this)"><i class="fas fa-chart-pie"></i> Дашборд</button>
+            <button class="admin-tab" onclick="showAdminPanel('editor',this)"><i class="fas fa-pen"></i> Редактор</button>
+            <button class="admin-tab" onclick="showAdminPanel('products',this)"><i class="fas fa-box"></i> Товары</button>
+            <button class="admin-tab" onclick="showAdminPanel('categories',this)"><i class="fas fa-tags"></i> Категории</button>
+            <button class="admin-tab" onclick="showAdminPanel('orders',this)"><i class="fas fa-shopping-bag"></i> Заказы</button>
+            <button class="admin-tab" onclick="showAdminPanel('requests',this)"><i class="fas fa-message"></i> Заявки</button>
+            <button class="admin-tab" onclick="showAdminPanel('users',this)"><i class="fas fa-users"></i> Пользователи</button>
+            <button class="admin-tab" onclick="showAdminPanel('reviews',this)"><i class="fas fa-star"></i> Отзывы</button>
+        </div>
+
+        <div class="admin-panel active" id="ap-dashboard">
+            <div class="stats-grid" id="admin-stats">
+                <div class="stat-card"><div class="stat-label">Заказов</div><div class="stat-value" id="stat-orders">—</div></div>
+                <div class="stat-card"><div class="stat-label">Товаров</div><div class="stat-value" id="stat-products">—</div></div>
+                <div class="stat-card"><div class="stat-label">Заявок</div><div class="stat-value" id="stat-requests">—</div></div>
+                <div class="stat-card"><div class="stat-label">Пользователей</div><div class="stat-value" id="stat-users">—</div></div>
+                <div class="stat-card"><div class="stat-label">Выручка</div><div class="stat-value" id="stat-revenue">—</div></div>
+            </div>
+            <div class="admin-toolbar"><h3>Последние заказы</h3></div>
+            <div class="scroll-table" id="admin-recent-orders"></div>
+        </div>
+
+        <div class="admin-panel" id="ap-editor">
+            <div class="admin-toolbar">
+                <h3>Редактор контента</h3>
+                <button class="btn" onclick="toggleEditMode()" id="toggleEditBtn"><i class="fas fa-edit"></i> Включить редактирование</button>
+                <button class="btn btn-outline" onclick="saveAllEdits()" id="saveEditsBtn" style="display:none"><i class="fas fa-save"></i> Сохранить всё</button>
+            </div>
+            <div class="editor-info-card">
+                <h4><i class="fas fa-info-circle" style="margin-right: 8px;"></i> Как редактировать сайт</h4>
+                <div class="step"><div class="step-number">1</div><div>Нажмите <strong>«Включить редактирование»</strong> — режим активируется</div></div>
+                <div class="step"><div class="step-number">2</div><div>Перейдите на любую страницу сайта через главное меню</div></div>
+                <div class="step"><div class="step-number">3</div><div>Наведите на текст — он выделится рамкой с иконкой карандаша</div></div>
+                <div class="step"><div class="step-number">4</div><div>Кликните по тексту и измените его в открывшемся окне</div></div>
+                <div class="step"><div class="step-number">5</div><div>Вернитесь сюда и нажмите <strong>«Сохранить всё»</strong></div></div>
+            </div>
+            <div class="editor-status" id="editorStatus"><i class="fas fa-pencil" style="margin-right: 8px; color: var(--primary);"></i> Режим редактирования активен — вы можете изменять тексты на сайте</div>
+        </div>
+
+        <div class="admin-panel" id="ap-products">
+            <div class="admin-toolbar"><h3>Управление товарами</h3><button class="btn" onclick="openProductModal()"><i class="fas fa-plus"></i> Добавить товар</button></div>
+            <div class="scroll-table"><table id="admin-products-table"><thead><tr><th>Фото</th><th>Название</th><th>Категория</th><th>Цена</th><th>Наличие</th><th>Рейтинг</th><th>Действия</th></tr></thead><tbody id="admin-products-tbody"></tbody></table></div>
+        </div>
+
+        <div class="admin-panel" id="ap-categories">
+            <div class="admin-toolbar"><h3>Категории товаров</h3><button class="btn" onclick="openCategoryModal()"><i class="fas fa-plus"></i> Добавить категорию</button></div>
+            <div class="scroll-table"><table id="admin-categories-table"><thead><tr><th>Название</th><th>Описание</th><th>Товаров</th><th>Действия</th></tr></thead><tbody id="admin-categories-tbody"></tbody></table></div>
+        </div>
+
+        <div class="admin-panel" id="ap-orders">
+            <div class="admin-toolbar"><h3>Заказы клиентов</h3><select onchange="filterAdminOrders(this.value)" id="admin-order-filter"><option value="">Все статусы</option><option value="new">Новые</option><option value="processing">В обработке</option><option value="completed">Выполнены</option></select></div>
+            <div class="scroll-table" id="admin-orders-table"></div>
+        </div>
+
+        <div class="admin-panel" id="ap-requests">
+            <div class="admin-toolbar"><h3>Заявки с сайта</h3><select onchange="filterAdminRequests(this.value)" id="admin-request-filter"><option value="">Все статусы</option><option value="new">Новые</option><option value="processing">В обработке</option><option value="completed">Завершены</option></select></div>
+            <div class="scroll-table" id="admin-requests-table"></div>
+        </div>
+
+        <div class="admin-panel" id="ap-users">
+            <div class="admin-toolbar"><h3>Зарегистрированные пользователи</h3></div>
+            <div class="scroll-table"><table><thead><tr><th>Аватар</th><th>Имя</th><th>Email</th><th>Роль</th><th>Телефон</th><th>Дата регистрации</th></tr></thead><tbody id="admin-users-tbody"></tbody></table></div>
+        </div>
+
+        <div class="admin-panel" id="ap-reviews">
+            <div class="admin-toolbar"><h3>Управление отзывами</h3></div>
+            <div class="scroll-table" id="admin-reviews-table"></div>
+        </div>
+    </div>
+</section>
+
+<div id="modal-container"></div>
+<div id="toast-container"></div>
+<div id="editModal" style="display:none;"></div>
+
+<!-- Футер -->
+<footer class="footer">
+    <div class="footer-content">
+        <div class="copyright">
+            © <span id="currentYear"></span> Smart Road Systems. Все права защищены.
+        </div>
+        <ul class="footer-links">
+            <li><a href="#" class="footer-link" onclick="showPage('home')">Главная</a></li>
+            <li><a href="#" class="footer-link" onclick="showPage('about')">О компании</a></li>
+            <li><a href="#" class="footer-link" onclick="showPage('catalog')">Каталог</a></li>
+            <li><a href="#" class="footer-link" onclick="showPage('services')">Услуги</a></li>
+            <li><a href="#" class="footer-link" onclick="showPage('contact')">Контакты</a></li>
+        </ul>
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js';
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged, updateProfile, GoogleAuthProvider, signInWithPopup } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js';
+    import { getFirestore, collection, doc, addDoc, getDocs, getDoc, updateDoc, deleteDoc, query, where, orderBy, serverTimestamp, setDoc, increment, arrayUnion, arrayRemove } from 'https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js';
+
+    const app = initializeApp(FIREBASE_CONFIG);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    let currentUser = null;
+    let userProfile = null;
+    let allProducts = [];
+    let allCategories = [];
+    let allOrders = [];
+    let allRequests = [];
+    let allUsers = [];
+    let allReviews = [];
+    let cart = JSON.parse(localStorage.getItem('smartroad_cart') || '[]');
+    let currentFilter = 'all';
+    let currentProductId = null;
+    let editModeActive = false;
+    let pendingEdits = {};
+    let mainSwiper = null;
+    let thumbsSwiper = null;
+    let currentGalleryImages = [];
+    let currentZoomIndex = 0;
+    let currentReviews = [];
+    let reviewSort = 'date_desc';
+    let userRating = 5;
+    let reviewImages = [];
+
+    const fmt = (n) => Number(n).toLocaleString('ru-RU') + ' ₽';
+    const dateStr = (ts) => {
+        if (!ts) return '—';
+        const d = ts.toDate ? ts.toDate() : new Date(ts);
+        return d.toLocaleDateString('ru-RU');
+    };
+    
+    window.toast = function(msg) {
+        const el = document.createElement('div');
+        el.className = 'toast';
+        el.textContent = msg;
+        document.getElementById('toast-container').appendChild(el);
+        setTimeout(() => el.remove(), 3500);
+    };
+
+    window.showPage = function(name) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        const pageEl = document.getElementById(name + 'Page');
+        if (pageEl) pageEl.classList.add('active');
+        if (name === 'catalog') { loadProducts(); loadCategories(); updateURLParams(); }
+        if (name === 'cart') renderCart();
+        if (name === 'account') renderAccount();
+        if (name === 'admin' && userProfile && userProfile.role === 'admin') loadAdminData();
+        window.scrollTo(0, 0);
+        if (window.innerWidth <= 768) closeMobileMenu();
+        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+        const idx = ['home', 'about', 'catalog', 'services', 'contact'].indexOf(name);
+        if (idx >= 0) {
+            const links = document.querySelectorAll('.nav-link');
+            if (links[idx]) links[idx].classList.add('active');
+        }
+    };
+
+    window.toggleMenu = function() {
+        document.getElementById('navLinks').classList.toggle('active');
+    };
+    
+    function closeMobileMenu() {
+        document.getElementById('navLinks').classList.remove('active');
+    }
+    
+    window.scrollToContent = function() {
+        const content = document.getElementById('mainContent');
+        if (content) content.scrollIntoView({ behavior: 'smooth' });
+    };
+    
+    window.scrollToTop = function() {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+    
+    window.addEventListener('scroll', () => {
+        const btn = document.getElementById('backToTop');
+        if (btn) btn.classList.toggle('visible', window.scrollY > 300);
+        const navbar = document.getElementById('navbar');
+        if (navbar) navbar.classList.toggle('scrolled', window.scrollY > 50);
+    });
+
+    window.openZoom = function(index) {
+        currentZoomIndex = index;
+        document.getElementById('zoomImage').src = currentGalleryImages[index];
+        document.getElementById('zoomModal').classList.add('active');
+    };
+    
+    window.closeZoom = function() {
+        document.getElementById('zoomModal').classList.remove('active');
+    };
+    
+    window.zoomPrev = function() {
+        if (currentGalleryImages.length === 0) return;
+        currentZoomIndex = (currentZoomIndex - 1 + currentGalleryImages.length) % currentGalleryImages.length;
+        document.getElementById('zoomImage').src = currentGalleryImages[currentZoomIndex];
+    };
+    
+    window.zoomNext = function() {
+        if (currentGalleryImages.length === 0) return;
+        currentZoomIndex = (currentZoomIndex + 1) % currentGalleryImages.length;
+        document.getElementById('zoomImage').src = currentGalleryImages[currentZoomIndex];
+    };
+
+    window.signInWithGoogle = async function() {
+        const provider = new GoogleAuthProvider();
+        provider.setCustomParameters({ prompt: 'select_account' });
+        try {
+            const result = await signInWithPopup(auth, provider);
+            const user = result.user;
+            const userDoc = await getDoc(doc(db, 'users', user.uid));
+            if (!userDoc.exists()) {
+                await setDoc(doc(db, 'users', user.uid), {
+                    name: user.displayName || 'Пользователь',
+                    email: user.email,
+                    role: 'user',
+                    photoURL: user.photoURL || null,
+                    createdAt: serverTimestamp()
+                });
+            }
+            toast(`Добро пожаловать, ${user.displayName || user.email}!`);
+            renderAccount();
+            showPage('account');
+        } catch (error) {
+            console.error('Google sign in error:', error);
+        }
+    };
+
+    window.toggleEditMode = function() {
+        editModeActive = !editModeActive;
+        const toggleBtn = document.getElementById('toggleEditBtn');
+        const saveBtn = document.getElementById('saveEditsBtn');
+        const statusEl = document.getElementById('editorStatus');
+        
+        if (editModeActive) {
+            document.body.classList.add('edit-mode-active');
+            toggleBtn.innerHTML = '<i class="fas fa-lock"></i> Выключить редактирование';
+            saveBtn.style.display = 'inline-block';
+            statusEl.classList.add('active');
+            attachEditListeners();
+            toast('Режим редактирования включён');
+        } else {
+            document.body.classList.remove('edit-mode-active');
+            toggleBtn.innerHTML = '<i class="fas fa-edit"></i> Включить редактирование';
+            saveBtn.style.display = 'none';
+            statusEl.classList.remove('active');
+            pendingEdits = {};
+            toast('Режим редактирования выключен');
+        }
+    };
+    
+    function attachEditListeners() {
+        document.querySelectorAll('.editable-text').forEach(el => {
+            el.removeEventListener('click', handleEditClick);
+            el.addEventListener('click', handleEditClick);
+        });
+    }
+    
+    function handleEditClick(e) {
+        e.stopPropagation();
+        if (!editModeActive) return;
+        const element = e.currentTarget;
+        const page = element.dataset.page;
+        const field = element.dataset.field;
+        const currentText = element.innerText;
+        
+        const modal = document.getElementById('editModal');
+        modal.innerHTML = `
+            <div class="modal-overlay" onclick="if(event.target===this) closeEditModal()">
+                <div class="modal-box" style="max-width: 500px;">
+                    <h3 class="modal-title">Редактировать текст</h3>
+                    <div class="form-group">
+                        <label>Страница: ${page}</label>
+                        <label>Поле: ${field}</label>
+                        <textarea id="editTextArea" rows="5" class="form-input" style="width:100%; margin-top:10px;">${currentText}</textarea>
+                    </div>
+                    <div class="modal-actions">
+                        <button class="btn btn-outline" onclick="closeEditModal()">Отмена</button>
+                        <button class="btn" onclick="saveEdit('${page}', '${field}')">Сохранить</button>
+                    </div>
+                </div>
+            </div>
+        `;
+        modal.style.display = 'block';
+    }
+    
+    window.saveEdit = function(page, field) {
+        const newText = document.getElementById('editTextArea').value;
+        const element = document.querySelector(`.editable-text[data-page="${page}"][data-field="${field}"]`);
+        if (element) {
+            element.innerText = newText;
+            pendingEdits[`${page}_${field}`] = newText;
+        }
+        closeEditModal();
+        toast('Изменение сохранено локально');
+    };
+    
+    window.closeEditModal = function() {
+        document.getElementById('editModal').style.display = 'none';
+    };
+    
+    window.saveAllEdits = async function() {
+        if (!db) return;
+        try {
+            const editsRef = doc(db, 'siteContent', 'pagesText');
+            await setDoc(editsRef, pendingEdits, { merge: true });
+            toast('Все изменения сохранены в Firebase!');
+            pendingEdits = {};
+        } catch(e) {
+            toast('Ошибка сохранения: ' + e.message);
+        }
+    };
+    
+    async function loadSiteContent() {
+        if (!db) return;
+        try {
+            const snap = await getDoc(doc(db, 'siteContent', 'pagesText'));
+            if (snap.exists()) {
+                const data = snap.data();
+                for (const [key, value] of Object.entries(data)) {
+                    if (!value || value.trim() === '') continue;
+                    const parts = key.split('_');
+                    if (parts.length >= 2) {
+                        const page = parts[0];
+                        const field = parts.slice(1).join('_');
+                        const element = document.querySelector(`.editable-text[data-page="${page}"][data-field="${field}"]`);
+                        if (element && value.trim() !== '') {
+                            element.innerText = value;
+                        }
+                    }
+                }
+            }
+        } catch(e) {
+            console.log('Ошибка загрузки контента:', e);
+        }
+    }
+
+    async function loadCategories() {
+        try {
+            const snap = await getDocs(collection(db, 'categories'));
+            allCategories = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+            renderCatFilters();
+        } catch(e) {}
+    }
+    
+    function renderCatFilters() {
+        const container = document.getElementById('categoryFilters');
+        if (!container) return;
+        container.innerHTML = `<button class="filter-btn ${currentFilter === 'all' ? 'active' : ''}" onclick="filterProducts('all')">Все</button>` +
+            allCategories.map(c => `<button class="filter-btn ${currentFilter === c.id ? 'active' : ''}" onclick="filterProducts('${c.id}')">${c.name}</button>`).join('');
+    }
+    
+    async function loadProducts() {
+        try {
+            const snap = await getDocs(collection(db, 'products'));
+            allProducts = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+            for (let p of allProducts) {
+                const rSnap = await getDocs(query(collection(db, 'reviews'), where('productId', '==', p.id)));
+                const reviews = rSnap.docs.map(d => d.data());
+                p.avgRating = reviews.length > 0 ? reviews.reduce((s, r) => s + r.rating, 0) / reviews.length : 0;
+                p.reviewCount = reviews.length;
+            }
+            renderCatalog();
+        } catch(e) {}
+    }
+    
+    function updateURLParams() {
+        const params = new URLSearchParams();
+        if (currentFilter !== 'all') params.set('category', currentFilter);
+        const search = document.getElementById('searchInput')?.value;
+        if (search) params.set('search', search);
+        const min = document.getElementById('priceMin')?.value;
+        if (min) params.set('minPrice', min);
+        const max = document.getElementById('priceMax')?.value;
+        if (max) params.set('maxPrice', max);
+        const sort = document.getElementById('sortSelect')?.value;
+        if (sort !== 'default') params.set('sort', sort);
+        if (document.getElementById('inStockOnly')?.checked) params.set('inStock', 'true');
+        const newUrl = `${window.location.pathname}${params.toString() ? '?' + params.toString() : ''}`;
+        window.history.replaceState({}, '', newUrl);
+    }
+    
+    function renderCatalog() {
+        const grid = document.getElementById('catalogGrid');
+        const search = document.getElementById('searchInput')?.value.toLowerCase() || '';
+        const minPrice = parseFloat(document.getElementById('priceMin')?.value) || 0;
+        const maxPrice = parseFloat(document.getElementById('priceMax')?.value) || Infinity;
+        const inStockOnly = document.getElementById('inStockOnly')?.checked || false;
+        const sortBy = document.getElementById('sortSelect')?.value || 'default';
+        
+        let filtered = allProducts;
+        if (currentFilter !== 'all') filtered = filtered.filter(p => p.categoryId === currentFilter);
+        if (search) filtered = filtered.filter(p => p.name.toLowerCase().includes(search) || (p.description || '').toLowerCase().includes(search));
+        filtered = filtered.filter(p => p.price >= minPrice && p.price <= maxPrice);
+        if (inStockOnly) filtered = filtered.filter(p => p.inStock);
+        
+        if (sortBy === 'price_asc') filtered.sort((a, b) => a.price - b.price);
+        else if (sortBy === 'price_desc') filtered.sort((a, b) => b.price - a.price);
+        else if (sortBy === 'rating') filtered.sort((a, b) => (b.avgRating || 0) - (a.avgRating || 0));
+        else if (sortBy === 'newest') filtered.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+        
+        updateURLParams();
+        
+        if (filtered.length === 0) {
+            grid.innerHTML = '<div style="text-align:center; grid-column:1/-1; padding:3rem; color:var(--gray);">Товары не найдены</div>';
+            return;
+        }
+        
+        const catMap = Object.fromEntries(allCategories.map(c => [c.id, c.name]));
+        
+        grid.innerHTML = filtered.map(p => {
+            const avgRating = p.avgRating || 0;
+            const starsHtml = '★'.repeat(Math.round(avgRating)) + '☆'.repeat(5 - Math.round(avgRating));
+            return `
+                <div class="product-card" onclick="showProduct('${p.id}')">
+                    <div class="product-image">
+                        ${p.images && p.images.length > 0 ?
+                            `<img src="${p.images[0]}" alt="${p.name}" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\\'product-image-placeholder\\'><i class=\\'fas fa-image\\'></i></div>'">` :
+                            p.imageUrl ?
+                            `<img src="${p.imageUrl}" alt="${p.name}" loading="lazy" onerror="this.parentElement.innerHTML='<div class=\\'product-image-placeholder\\'><i class=\\'fas fa-image\\'></i></div>'">` :
+                            '<div class="product-image-placeholder"><i class="fas fa-image"></i></div>'
+                        }
+                    </div>
+                    <div class="product-content">
+                        <div style="font-size:0.8rem; color:var(--gray); margin-bottom: 8px;">${catMap[p.categoryId] || ''}</div>
+                        <h3 class="product-title">${p.name}</h3>
+                        ${avgRating > 0 ? `
+                        <div class="product-rating">
+                            <span class="product-rating-stars">${starsHtml}</span>
+                            <span class="product-rating-count">(${p.reviewCount || 0})</span>
+                        </div>` : ''}
+                        <div class="product-price">${fmt(p.price)}</div>
+                        ${p.tags && p.tags.length > 0 ? `
+                        <div class="product-tags">
+                            ${p.tags.map(t => `<span class="product-tag">${t}</span>`).join('')}
+                        </div>` : ''}
+                        <button class="btn" style="width:100%; margin-top: 12px;" onclick="event.stopPropagation();addToCart('${p.id}')">
+                            <i class="fas fa-shopping-cart" style="margin-right: 8px;"></i>В корзину
+                        </button>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+    
+    window.filterProducts = function(cat) {
+        currentFilter = cat;
+        renderCatFilters();
+        renderCatalog();
+    };
+    
+    document.getElementById('searchInput')?.addEventListener('input', renderCatalog);
+    document.getElementById('priceMin')?.addEventListener('input', renderCatalog);
+    document.getElementById('priceMax')?.addEventListener('input', renderCatalog);
+    document.getElementById('sortSelect')?.addEventListener('change', renderCatalog);
+    document.getElementById('inStockOnly')?.addEventListener('change', renderCatalog);
+
+    async function loadProductReviews(productId) {
+        try {
+            const rSnap = await getDocs(query(collection(db, 'reviews'), where('productId', '==', productId)));
+            currentReviews = rSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+            sortReviewsInternal(reviewSort);
+        } catch(e) {
+            currentReviews = [];
+        }
+    }
+    
+    window.sortReviews = function(sort) {
+        reviewSort = sort;
+        sortReviewsInternal(sort);
+        document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
+        document.querySelector(`.sort-btn[onclick*="${sort}"]`)?.classList.add('active');
+        const container = document.getElementById('reviewsContainer');
+        if (container) container.innerHTML = renderReviews();
+    };
+    
+    function sortReviewsInternal(sort) {
+        if (sort === 'date_desc') currentReviews.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
+        else if (sort === 'date_asc') currentReviews.sort((a, b) => (a.createdAt?.seconds || 0) - (b.createdAt?.seconds || 0));
+        else if (sort === 'rating_desc') currentReviews.sort((a, b) => b.rating - a.rating);
+        else if (sort === 'rating_asc') currentReviews.sort((a, b) => a.rating - b.rating);
+    }
+    
+    function renderReviews() {
+        if (currentReviews.length === 0) return '<p style="color:var(--gray); text-align:center; padding:2rem;">Отзывов пока нет. Будьте первым!</p>';
+        
+        return currentReviews.map(r => {
+            const starsHtml = '★'.repeat(r.rating) + '☆'.repeat(5 - r.rating);
+            const likes = r.likes || 0;
+            const liked = r.likedBy?.includes(currentUser?.uid);
+            
+            return `
+                <div class="review-card" id="review-${r.id}">
+                    <div class="review-header">
+                        <div class="review-avatar">
+                            ${r.userPhotoURL ? `<img src="${r.userPhotoURL}" alt="">` : (r.userName || 'А')[0].toUpperCase()}
+                        </div>
+                        <div class="review-info">
+                            <div class="review-name">${r.userName || 'Аноним'}</div>
+                            <div class="review-date">${dateStr(r.createdAt)}</div>
+                        </div>
+                    </div>
+                    <div class="review-stars">${starsHtml}</div>
+                    <div class="review-text">${r.comment}</div>
+                    ${r.images && r.images.length > 0 ? `
+                        <div class="review-images">
+                            ${r.images.map(img => `<img src="${img}" class="review-image" onclick="window.open('${img}', '_blank')">`).join('')}
+                        </div>
+                    ` : ''}
+                    <div class="review-actions">
+                        <span class="review-like" onclick="likeReview('${r.id}')">
+                            <i class="far fa-thumbs-up" style="${liked ? 'color:var(--primary);' : ''}"></i> ${likes}
+                        </span>
+                        ${userProfile?.role === 'admin' && !r.adminReply ? `
+                            <span class="review-like" onclick="showReplyForm('${r.id}')">
+                                <i class="fas fa-reply"></i> Ответить
+                            </span>
+                        ` : ''}
+                    </div>
+                    ${r.adminReply ? `
+                        <div class="admin-reply">
+                            <div class="admin-reply-header">
+                                <span class="admin-reply-badge">Ответ администратора</span>
+                            </div>
+                            <div class="admin-reply-text">${r.adminReply}</div>
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+        }).join('');
+    }
+    
+    window.likeReview = async function(reviewId) {
+        if (!currentUser) { toast('Войдите, чтобы оценить отзыв'); return; }
+        try {
+            const ref = doc(db, 'reviews', reviewId);
+            const snap = await getDoc(ref);
+            if (snap.exists()) {
+                const data = snap.data();
+                const likedBy = data.likedBy || [];
+                if (likedBy.includes(currentUser.uid)) {
+                    await updateDoc(ref, { likes: increment(-1), likedBy: arrayRemove(currentUser.uid) });
+                } else {
+                    await updateDoc(ref, { likes: increment(1), likedBy: arrayUnion(currentUser.uid) });
+                }
+                await loadProductReviews(currentProductId);
+                const container = document.getElementById('reviewsContainer');
+                if (container) container.innerHTML = renderReviews();
+            }
+        } catch(e) {}
+    };
+    
+    window.showReplyForm = function(reviewId) {
+        const reviewEl = document.getElementById(`review-${reviewId}`);
+        const form = document.createElement('div');
+        form.className = 'review-form';
+        form.style.marginTop = '12px';
+        form.innerHTML = `
+            <h4>Ответить на отзыв</h4>
+            <div class="form-group">
+                <textarea id="replyText-${reviewId}" rows="3" placeholder="Ваш ответ..."></textarea>
+            </div>
+            <button class="btn btn-sm" onclick="submitReply('${reviewId}')">Отправить</button>
+            <button class="btn btn-sm btn-outline" onclick="this.parentElement.remove()">Отмена</button>
+        `;
+        reviewEl.appendChild(form);
+    };
+    
+    window.submitReply = async function(reviewId) {
+        const text = document.getElementById(`replyText-${reviewId}`).value.trim();
+        if (!text) return;
+        try {
+            await updateDoc(doc(db, 'reviews', reviewId), { adminReply: text, adminReplyDate: serverTimestamp() });
+            toast('Ответ отправлен');
+            await loadProductReviews(currentProductId);
+            const container = document.getElementById('reviewsContainer');
+            if (container) container.innerHTML = renderReviews();
+        } catch(e) { toast('Ошибка: ' + e.message); }
+    };
+    
+    function renderReviewForm() {
+        return `
+            <div class="review-form">
+                <h4 style="font-size:18px;margin-bottom:16px">Оставить отзыв</h4>
+                <div class="form-group">
+                    <label>Ваша оценка</label>
+                    <div class="rating-input" id="ratingInput">
+                        ${[1,2,3,4,5].map(i => `<span class="rating-star ${i <= userRating ? 'active' : ''}" onclick="setRating(${i})">★</span>`).join('')}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Комментарий</label>
+                    <textarea id="reviewComment" rows="3" placeholder="Расскажите о товаре..."></textarea>
+                </div>
+                <div class="image-upload-area" onclick="document.getElementById('reviewImageInput').click()">
+                    <i class="fas fa-cloud-upload-alt" style="font-size:24px; margin-bottom:8px;"></i>
+                    <p>Нажмите, чтобы добавить фото</p>
+                    <input type="file" id="reviewImageInput" multiple accept="image/*" style="display:none" onchange="handleReviewImages(event)">
+                </div>
+                <div class="image-preview" id="reviewImagePreview"></div>
+                <button class="btn" onclick="submitReviewWithImages()">Опубликовать отзыв</button>
+            </div>
+        `;
+    }
+    
+    window.setRating = function(r) {
+        userRating = r;
+        document.querySelectorAll('.rating-star').forEach((s, i) => {
+            s.classList.toggle('active', i < r);
+        });
+    };
+    
+    window.handleReviewImages = function(event) {
+        const files = event.target.files;
+        reviewImages = [];
+        const preview = document.getElementById('reviewImagePreview');
+        preview.innerHTML = '';
+        
+        for (let file of files) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                reviewImages.push(e.target.result);
+                const item = document.createElement('div');
+                item.className = 'preview-item';
+                item.innerHTML = `
+                    <img src="${e.target.result}">
+                    <button class="preview-remove" onclick="removeReviewImage(${reviewImages.length - 1})">×</button>
+                `;
+                preview.appendChild(item);
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+    
+    window.removeReviewImage = function(index) {
+        reviewImages.splice(index, 1);
+        const preview = document.getElementById('reviewImagePreview');
+        preview.innerHTML = '';
+        reviewImages.forEach((img, i) => {
+            const item = document.createElement('div');
+            item.className = 'preview-item';
+            item.innerHTML = `
+                <img src="${img}">
+                <button class="preview-remove" onclick="removeReviewImage(${i})">×</button>
+            `;
+            preview.appendChild(item);
+        });
+    };
+    
+    window.submitReviewWithImages = async function() {
+        if (!currentUser) { toast('Войдите, чтобы оставить отзыв'); return; }
+        const comment = document.getElementById('reviewComment')?.value.trim();
+        if (!comment) { toast('Введите текст отзыва'); return; }
+        
+        try {
+            await addDoc(collection(db, 'reviews'), {
+                productId: currentProductId,
+                rating: userRating,
+                comment,
+                images: reviewImages,
+                userId: currentUser.uid,
+                userName: currentUser.displayName || 'Пользователь',
+                userPhotoURL: currentUser.photoURL,
+                likes: 0,
+                likedBy: [],
+                createdAt: serverTimestamp()
+            });
+            toast('Отзыв опубликован!');
+            userRating = 5;
+            reviewImages = [];
+            showProduct(currentProductId);
+        } catch(e) { toast('Ошибка: ' + e.message); }
+    };
+
+    window.showProduct = async function(id) {
+        currentProductId = id;
+        showPage('product');
+        const container = document.getElementById('productDetailContent');
+        container.innerHTML = '<div style="text-align:center; padding:3rem;">Загрузка...</div>';
+        
+        let p = allProducts.find(pr => pr.id === id);
+        if (!p && db) {
+            try {
+                const snap = await getDoc(doc(db, 'products', id));
+                if (snap.exists()) {
+                    p = { id: snap.id, ...snap.data() };
+                    allProducts.push(p);
+                }
+            } catch(e) {}
+        }
+        
+        if (!p) {
+            container.innerHTML = '<div style="text-align:center; padding:3rem;"><p>Товар не найден</p><button class="btn" onclick="showPage(\'catalog\')">Вернуться в каталог</button></div>';
+            return;
+        }
+        
+        const catName = allCategories.find(c => c.id === p.categoryId)?.name || 'Без категории';
+        currentGalleryImages = p.images || (p.imageUrl ? [p.imageUrl] : []);
+        await loadProductReviews(id);
+        
+        const avgRating = currentReviews.length > 0 ? currentReviews.reduce((s, r) => s + r.rating, 0) / currentReviews.length : 0;
+        const starsHtml = '★'.repeat(Math.round(avgRating)) + '☆'.repeat(5 - Math.round(avgRating));
+        
+        const galleryHtml = currentGalleryImages.length > 0 ? `
+            <div class="product-gallery">
+                <div class="swiper main-swiper">
+                    <div class="swiper-wrapper">
+                        ${currentGalleryImages.map((img, i) => `
+                            <div class="swiper-slide" onclick="openZoom(${i})">
+                                <img src="${img}" alt="${p.name}">
+                            </div>
+                        `).join('')}
+                    </div>
+                    <div class="swiper-button-next"></div>
+                    <div class="swiper-button-prev"></div>
+                </div>
+                ${currentGalleryImages.length > 1 ? `
+                <div thumbsSlider="" class="swiper thumbs-swiper">
+                    <div class="swiper-wrapper">
+                        ${currentGalleryImages.map(img => `
+                            <div class="swiper-slide">
+                                <img src="${img}" alt="">
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>` : ''}
+            </div>
+        ` : '<div style="aspect-ratio:1; background:var(--card-bg); display:flex; align-items:center; justify-content:center; border-radius:var(--radius);"><i class="fas fa-image" style="font-size:4rem; color:var(--gray);"></i></div>';
+        
+        container.innerHTML = `
+            <div style="margin-bottom:24px;">
+                <div class="pd-breadcrumb">
+                    <span onclick="showPage('home')">Главная</span> › 
+                    <span onclick="showPage('catalog')">Каталог</span> › 
+                    <span>${p.name}</span>
+                </div>
+            </div>
+            <div class="pd-grid">
+                ${galleryHtml}
+                <div>
+                    <div class="pd-cat-badge">${catName}</div>
+                    <h1 class="pd-title">${p.name}</h1>
+                    <div class="pd-rating-summary">
+                        <span class="pd-rating-stars">${starsHtml}</span>
+                        <span class="pd-rating-count">${currentReviews.length} отзывов</span>
+                    </div>
+                    <div class="pd-price">${fmt(p.price)}</div>
+                    <div class="pd-stock ${p.inStock ? 'in' : 'out'}">
+                        <i class="fas fa-${p.inStock ? 'check-circle' : 'times-circle'}"></i>
+                        ${p.inStock ? 'В наличии' : 'Нет в наличии'}
+                    </div>
+                    <p class="pd-desc">${p.description || ''}</p>
+                    <div class="qty-ctrl">
+                        <button class="qty-btn" onclick="document.getElementById('pd-qty').textContent = Math.max(1, parseInt(document.getElementById('pd-qty').textContent) - 1)">−</button>
+                        <span class="qty-num" id="pd-qty">1</span>
+                        <button class="qty-btn" onclick="document.getElementById('pd-qty').textContent = parseInt(document.getElementById('pd-qty').textContent) + 1">+</button>
+                    </div>
+                    <button class="pd-add-btn" onclick="addToCart('${p.id}', parseInt(document.getElementById('pd-qty').textContent))" ${!p.inStock ? 'disabled style="opacity:0.5;cursor:not-allowed;"' : ''}>
+                        <i class="fas fa-shopping-cart" style="margin-right: 8px;"></i>
+                        ${p.inStock ? 'Добавить в корзину' : 'Нет в наличии'}
+                    </button>
+                </div>
+            </div>
+            <div class="reviews-section">
+                <div class="reviews-header">
+                    <h3 style="font-size: 24px;">Отзывы (${currentReviews.length})</h3>
+                    <div class="reviews-sort">
+                        <button class="sort-btn ${reviewSort === 'date_desc' ? 'active' : ''}" onclick="sortReviews('date_desc')">Новые</button>
+                        <button class="sort-btn ${reviewSort === 'date_asc' ? 'active' : ''}" onclick="sortReviews('date_asc')">Старые</button>
+                        <button class="sort-btn ${reviewSort === 'rating_desc' ? 'active' : ''}" onclick="sortReviews('rating_desc')">Высокий рейтинг</button>
+                        <button class="sort-btn ${reviewSort === 'rating_asc' ? 'active' : ''}" onclick="sortReviews('rating_asc')">Низкий рейтинг</button>
+                    </div>
+                </div>
+                <div id="reviewsContainer">${renderReviews()}</div>
+                ${currentUser ? renderReviewForm() : '<p style="margin-top:20px;"><a onclick="showPage(\'account\')" style="color:var(--primary); cursor:pointer">Войдите</a>, чтобы оставить отзыв</p>'}
+            </div>
+        `;
+        
+        setTimeout(() => {
+            if (currentGalleryImages.length > 1) {
+                thumbsSwiper = new Swiper(".thumbs-swiper", {
+                    spaceBetween: 8,
+                    slidesPerView: 'auto',
+                    freeMode: true,
+                    watchSlidesProgress: true,
+                });
+                mainSwiper = new Swiper(".main-swiper", {
+                    spaceBetween: 10,
+                    navigation: { nextEl: ".swiper-button-next", prevEl: ".swiper-button-prev" },
+                    thumbs: { swiper: thumbsSwiper },
+                });
+            } else if (currentGalleryImages.length === 1) {
+                mainSwiper = new Swiper(".main-swiper", {
+                    navigation: { nextEl: ".swiper-button-next", prevEl: ".swiper-button-prev" },
+                });
+            }
+        }, 100);
+    };
+
+    window.addToCart = function(productId, qty = 1) {
+        const p = allProducts.find(p => p.id === productId);
+        if (!p) return;
+        const existing = cart.find(i => i.id === productId);
+        if (existing) existing.qty += qty;
+        else cart.push({ id: productId, name: p.name, price: p.price, qty, imageUrl: p.images?.[0] || p.imageUrl });
+        localStorage.setItem('smartroad_cart', JSON.stringify(cart));
+        updateCartBadge();
+        toast('Товар добавлен в корзину');
+        renderCart();
+    };
+    
+    function updateCartBadge() {
+        const total = cart.reduce((s, i) => s + i.qty, 0);
+        document.getElementById('cartBadge').textContent = total;
+    }
+    
+    function renderCart() {
+        const container = document.getElementById('cartItems');
+        const totalSpan = document.getElementById('cartTotal');
+        if (cart.length === 0) {
+            container.innerHTML = '<p style="text-align:center; padding:2rem; color:var(--gray);">Корзина пуста</p>';
+            totalSpan.textContent = '0 ₽';
+            return;
+        }
+        let total = 0;
+        container.innerHTML = cart.map(i => {
+            total += i.price * i.qty;
+            return `
+                <div class="cart-item">
+                    <div style="width:60px;height:60px;background:var(--card-bg);border-radius:8px;display:flex;align-items:center;justify-content:center;overflow:hidden;">
+                        ${i.imageUrl ? `<img src="${i.imageUrl}" style="width:100%;height:100%;object-fit:cover;">` : '<i class="fas fa-image"></i>'}
+                    </div>
+                    <div style="flex:2"><strong>${i.name}</strong><br>${fmt(i.price)}</div>
+                    <div style="display:flex; align-items:center; gap:0.5rem;">
+                        <button class="btn btn-sm" onclick="changeQty('${i.id}', -1)">-</button>
+                        <span>${i.qty}</span>
+                        <button class="btn btn-sm" onclick="changeQty('${i.id}', 1)">+</button>
+                    </div>
+                    <div style="min-width:100px">${fmt(i.price * i.qty)}</div>
+                    <button class="btn btn-sm btn-danger" onclick="removeFromCart('${i.id}')"><i class="fas fa-trash"></i></button>
+                </div>
+            `;
+        }).join('');
+        totalSpan.textContent = fmt(total);
+    }
+    
+    window.changeQty = function(id, delta) {
+        const item = cart.find(i => i.id === id);
+        if (item) {
+            item.qty += delta;
+            if (item.qty <= 0) cart = cart.filter(i => i.id !== id);
+            localStorage.setItem('smartroad_cart', JSON.stringify(cart));
+            updateCartBadge();
+            renderCart();
+        }
+    };
+    
+    window.removeFromCart = function(id) {
+        cart = cart.filter(i => i.id !== id);
+        localStorage.setItem('smartroad_cart', JSON.stringify(cart));
+        updateCartBadge();
+        renderCart();
+    };
+    
+    window.checkout = function() {
+        if (!currentUser) { toast('Войдите в аккаунт'); showPage('account'); return; }
+        if (cart.length === 0) { toast('Корзина пуста'); return; }
+        showPage('checkout');
+    };
+    
+    window.placeOrder = async function() {
+        const name = document.getElementById('checkoutName')?.value.trim();
+        const phone = document.getElementById('checkoutPhone')?.value.trim();
+        const email = document.getElementById('checkoutEmail')?.value.trim();
+        const address = document.getElementById('checkoutAddress')?.value.trim();
+        const comment = document.getElementById('checkoutComment')?.value.trim();
+        if (!name || !phone || !email || !address) { toast('Заполните все обязательные поля'); return; }
+        const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
+        await addDoc(collection(db, 'orders'), {
+            name, phone, email, address, comment,
+            items: cart, total, status: 'new',
+            userId: currentUser.uid,
+            createdAt: serverTimestamp()
+        });
+        cart = [];
+        localStorage.setItem('smartroad_cart', JSON.stringify(cart));
+        updateCartBadge();
+        document.getElementById('checkoutForm').style.display = 'none';
+        document.getElementById('checkoutSuccess').style.display = 'block';
+        toast('Заказ оформлен!');
+    };
+    
+    window.submitRequest = async function() {
+        const name = document.getElementById('contactName')?.value.trim();
+        const phone = document.getElementById('contactPhone')?.value.trim();
+        const email = document.getElementById('contactEmail')?.value.trim();
+        const subject = document.getElementById('contactSubject')?.value;
+        const message = document.getElementById('contactMessage')?.value.trim();
+        if (!name || !phone) { toast('Заполните обязательные поля'); return; }
+        await addDoc(collection(db, 'requests'), {
+            name, phone, email, subject, message,
+            status: 'new',
+            userId: currentUser?.uid || null,
+            createdAt: serverTimestamp()
+        });
+        document.getElementById('contactForm').style.display = 'none';
+        document.getElementById('contactSuccess').style.display = 'block';
+        toast('Заявка отправлена!');
+    };
+    
+    window.resetContactForm = function() {
+        document.getElementById('contactForm').style.display = 'block';
+        document.getElementById('contactSuccess').style.display = 'none';
+    };
+
+    async function renderAccount() {
+        const container = document.getElementById('accountContent');
+        if (!currentUser) {
+            container.innerHTML = `
+                <div class="auth-container">
+                    <div class="auth-card">
+                        <h3>Вход в аккаунт</h3>
+                        <button class="btn-google" onclick="signInWithGoogle()"><i class="fab fa-google"></i> Войти через Google</button>
+                        <div class="divider"><span>или</span></div>
+                        <div class="form-group"><input type="email" id="loginEmail" placeholder="Email"></div>
+                        <div class="form-group"><input type="password" id="loginPass" placeholder="Пароль"></div>
+                        <button class="btn" onclick="login()" style="width:100%">Войти</button>
+                        <p class="auth-footer"><a onclick="showRegisterForm()">Создать аккаунт</a></p>
+                        <div id="authError" style="color:var(--error); margin-top:1rem;"></div>
+                    </div>
+                </div>
+            `;
+            return;
+        }
+        
+        const ordersSnap = await getDocs(query(collection(db, 'orders'), where('userId', '==', currentUser.uid), orderBy('createdAt', 'desc')));
+        const requestsSnap = await getDocs(query(collection(db, 'requests'), where('userId', '==', currentUser.uid), orderBy('createdAt', 'desc')));
+        const orders = ordersSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+        const requests = requestsSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+        
+        container.innerHTML = `
+            <div style="max-width: 600px; margin: 0 auto;">
+                <div style="background:var(--card-bg); padding:2rem; border-radius:var(--radius-lg); margin-bottom:2rem; text-align:center;">
+                    <div class="user-avatar">
+                        ${currentUser.photoURL ? `<img src="${currentUser.photoURL}">` : '<i class="fas fa-user"></i>'}
+                    </div>
+                    <h3>${currentUser.displayName || 'Пользователь'}</h3>
+                    <p style="color:var(--gray);">${currentUser.email}</p>
+                    <button class="btn btn-outline" onclick="logout()">Выйти</button>
+                </div>
+                <h3>Мои заказы</h3>
+                ${orders.length === 0 ? '<p style="color:var(--gray);">Заказов пока нет</p>' : orders.map(o => `
+                    <div style="background:var(--card-bg); padding:1rem; border-radius:var(--radius); margin-bottom:0.5rem;">
+                        <strong>${o.items.map(i => i.name).join(', ')}</strong><br>
+                        Сумма: ${fmt(o.total)}<br>
+                        Статус: <span class="status-badge status-${o.status}">${o.status === 'new' ? 'Новый' : o.status === 'processing' ? 'В обработке' : 'Выполнен'}</span><br>
+                        <small>${dateStr(o.createdAt)}</small>
+                    </div>
+                `).join('')}
+                <h3 style="margin-top:2rem;">Мои заявки</h3>
+                ${requests.length === 0 ? '<p style="color:var(--gray);">Заявок пока нет</p>' : requests.map(r => `
+                    <div style="background:var(--card-bg); padding:1rem; border-radius:var(--radius); margin-bottom:0.5rem;">
+                        <strong>${r.subject}</strong><br>
+                        Статус: <span class="status-badge status-${r.status}">${r.status === 'new' ? 'Новая' : r.status === 'processing' ? 'В обработке' : 'Завершена'}</span><br>
+                        <small>${dateStr(r.createdAt)}</small>
+                    </div>
+                `).join('')}
+            </div>
+        `;
+    }
+    
+    window.login = async function() {
+        try {
+            await signInWithEmailAndPassword(auth, document.getElementById('loginEmail').value, document.getElementById('loginPass').value);
+            toast('Вход выполнен');
+            showPage('account');
+        } catch(e) {
+            const errEl = document.getElementById('authError');
+            if (errEl) errEl.textContent = 'Неверный email или пароль';
+        }
+    };
+    
+    window.showRegisterForm = function() {
+        const container = document.getElementById('accountContent');
+        container.innerHTML = `
+            <div class="auth-container">
+                <div class="auth-card">
+                    <h3>Регистрация</h3>
+                    <button class="btn-google" onclick="signInWithGoogle()"><i class="fab fa-google"></i> Регистрация через Google</button>
+                    <div class="divider"><span>или email</span></div>
+                    <div class="form-group"><input type="text" id="regName" placeholder="Имя"></div>
+                    <div class="form-group"><input type="email" id="regEmail" placeholder="Email"></div>
+                    <div class="form-group"><input type="password" id="regPass" placeholder="Пароль"></div>
+                    <button class="btn" onclick="register()" style="width:100%">Зарегистрироваться</button>
+                    <p class="auth-footer"><a onclick="renderAccount()">← Назад</a></p>
+                    <div id="regError" style="color:var(--error);"></div>
+                </div>
+            </div>
+        `;
+    };
+    
+    window.register = async function() {
+        const name = document.getElementById('regName')?.value;
+        const email = document.getElementById('regEmail')?.value;
+        const pass = document.getElementById('regPass')?.value;
+        if (pass.length < 6) {
+            document.getElementById('regError').textContent = 'Пароль минимум 6 символов';
+            return;
+        }
+        try {
+            const cred = await createUserWithEmailAndPassword(auth, email, pass);
+            await updateProfile(cred.user, { displayName: name });
+            await setDoc(doc(db, 'users', cred.user.uid), {
+                name, email, role: 'user',
+                createdAt: serverTimestamp()
+            });
+            toast('Регистрация успешна!');
+            showPage('account');
+        } catch(e) {
+            document.getElementById('regError').textContent = e.message;
+        }
+    };
+    
+    window.logout = async function() {
+        await signOut(auth);
+        currentUser = null;
+        userProfile = null;
+        showPage('home');
+    };
+
+    async function loadAdminData() {
+        const pSnap = await getDocs(collection(db, 'products'));
+        const cSnap = await getDocs(collection(db, 'categories'));
+        const oSnap = await getDocs(query(collection(db, 'orders'), orderBy('createdAt', 'desc')));
+        const rSnap = await getDocs(query(collection(db, 'requests'), orderBy('createdAt', 'desc')));
+        const uSnap = await getDocs(collection(db, 'users'));
+        const revSnap = await getDocs(query(collection(db, 'reviews'), orderBy('createdAt', 'desc')));
+        
+        allProducts = pSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+        allCategories = cSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+        allOrders = oSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+        allRequests = rSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+        allUsers = uSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+        allReviews = revSnap.docs.map(d => ({ id: d.id, ...d.data() }));
+        
+        const revenue = allOrders.reduce((s, o) => s + (o.total || 0), 0);
+        document.getElementById('stat-orders').textContent = allOrders.length;
+        document.getElementById('stat-products').textContent = allProducts.length;
+        document.getElementById('stat-requests').textContent = allRequests.length;
+        document.getElementById('stat-users').textContent = allUsers.length;
+        document.getElementById('stat-revenue').textContent = fmt(revenue);
+        
+        renderAdminOrdersTable(allOrders.slice(0, 10), 'admin-recent-orders');
+        renderAdminOrdersTable(allOrders, 'admin-orders-table');
+        renderAdminRequestsTable(allRequests, 'admin-requests-table');
+        renderAdminProducts();
+        renderAdminCategories();
+        renderAdminUsers();
+        renderAdminReviews();
+    }
+    
+    function renderAdminOrdersTable(orders, containerId) {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+        if (!orders.length) { container.innerHTML = '<p style="padding:16px">Нет заказов</p>'; return; }
+        container.innerHTML = `<table><thead><tr><th>#</th><th>Дата</th><th>Покупатель</th><th>Сумма</th><th>Статус</th><th>Действие</th></tr></thead><tbody>${
+            orders.map(o => `<tr>
+                <td>#${o.id.slice(-6).toUpperCase()}</td>
+                <td>${dateStr(o.createdAt)}</td>
+                <td><div>${o.name || '—'}</div><small>${o.phone || ''}</small></td>
+                <td>${fmt(o.total)}</td>
+                <td><span class="status-badge status-${o.status}">${o.status === 'new' ? 'Новый' : o.status === 'processing' ? 'В обработке' : 'Выполнен'}</span></td>
+                <td><select onchange="updateOrderStatus('${o.id}', this.value)">
+                    <option ${o.status === 'new' ? 'selected' : ''}>new</option>
+                    <option ${o.status === 'processing' ? 'selected' : ''}>processing</option>
+                    <option ${o.status === 'completed' ? 'selected' : ''}>completed</option>
+                </select></td>
+            </tr>`).join('')
+        }</tbody></table>`;
+    }
+    
+    function renderAdminRequestsTable(requests, containerId) {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+        if (!requests.length) { container.innerHTML = '<p style="padding:16px">Нет заявок</p>'; return; }
+        container.innerHTML = `<table><thead><tr><th>#</th><th>Дата</th><th>Клиент</th><th>Тема</th><th>Статус</th><th>Действие</th></tr></thead><tbody>${
+            requests.map(r => `<tr>
+                <td>#${r.id.slice(-6).toUpperCase()}</td>
+                <td>${dateStr(r.createdAt)}</td>
+                <td><div>${r.name}</div><small>${r.phone}</small></td>
+                <td>${r.subject}</td>
+                <td><span class="status-badge status-${r.status}">${r.status === 'new' ? 'Новая' : r.status === 'processing' ? 'В обработке' : 'Завершена'}</span></td>
+                <td><select onchange="updateRequestStatus('${r.id}', this.value)">
+                    <option ${r.status === 'new' ? 'selected' : ''}>new</option>
+                    <option ${r.status === 'processing' ? 'selected' : ''}>processing</option>
+                    <option ${r.status === 'completed' ? 'selected' : ''}>completed</option>
+                </select></td>
+            </tr>`).join('')
+        }</tbody></table>`;
+    }
+    
+    function renderAdminProducts() {
+        const catMap = Object.fromEntries(allCategories.map(c => [c.id, c.name]));
+        const tbody = document.getElementById('admin-products-tbody');
+        tbody.innerHTML = allProducts.map(p => {
+            const avgRating = p.avgRating || 0;
+            return `<tr>
+                <td><div style="width:48px;height:48px;background:rgba(255,255,255,0.1);border-radius:8px;display:flex;align-items:center;justify-content:center;overflow:hidden;">
+                    ${p.images?.[0] || p.imageUrl ? `<img src="${p.images?.[0] || p.imageUrl}" style="width:100%;height:100%;object-fit:cover;">` : '📷'}
+                </div></td>
+                <td>${p.name}</td>
+                <td>${catMap[p.categoryId] || '—'}</td>
+                <td>${fmt(p.price)}</td>
+                <td><span class="status-badge ${p.inStock ? 'status-completed' : 'status-cancelled'}">${p.inStock ? 'В наличии' : 'Нет'}</span></td>
+                <td>${'★'.repeat(Math.round(avgRating))}${'☆'.repeat(5 - Math.round(avgRating))}</td>
+                <td>
+                    <button class="action-btn" onclick="editProduct('${p.id}')"><i class="fas fa-edit"></i></button>
+                    <button class="action-btn danger" onclick="deleteProduct('${p.id}')"><i class="fas fa-trash"></i></button>
+                </td>
+            </tr>`;
+        }).join('');
+    }
+    
+    function renderAdminCategories() {
+        const prodCountMap = {};
+        allProducts.forEach(p => { prodCountMap[p.categoryId] = (prodCountMap[p.categoryId] || 0) + 1; });
+        const tbody = document.getElementById('admin-categories-tbody');
+        tbody.innerHTML = allCategories.map(c => `<tr>
+            <td>${c.name}</td><td>${c.description || '—'}</td><td>${prodCountMap[c.id] || 0}</td>
+            <td>
+                <button class="action-btn" onclick="editCategory('${c.id}')"><i class="fas fa-edit"></i></button>
+                <button class="action-btn danger" onclick="deleteCategory('${c.id}')"><i class="fas fa-trash"></i></button>
+            </td>
+        </tr>`).join('');
+    }
+    
+    function renderAdminUsers() {
+        const tbody = document.getElementById('admin-users-tbody');
+        tbody.innerHTML = allUsers.map(u => `<tr>
+            <td><div style="width:36px;height:36px;border-radius:50%;background:var(--gradient);display:flex;align-items:center;justify-content:center;overflow:hidden;">
+                ${u.photoURL ? `<img src="${u.photoURL}" style="width:100%;height:100%;object-fit:cover;">` : (u.name || 'U')[0].toUpperCase()}
+            </div></td>
+            <td>${u.name || '—'}</td><td>${u.email || '—'}</td>
+            <td><span class="status-badge ${u.role === 'admin' ? 'status-processing' : 'status-new'}">${u.role === 'admin' ? 'Админ' : 'Пользователь'}</span></td>
+            <td>${u.phone || '—'}</td><td>${dateStr(u.createdAt)}</td>
+        </tr>`).join('');
+    }
+    
+    function renderAdminReviews() {
+        const container = document.getElementById('admin-reviews-table');
+        if (!allReviews.length) { container.innerHTML = '<p style="padding:16px">Нет отзывов</p>'; return; }
+        container.innerHTML = `<table><thead><tr><th>Товар</th><th>Пользователь</th><th>Оценка</th><th>Отзыв</th><th>Дата</th><th>Действия</th></tr></thead><tbody>${
+            allReviews.map(r => {
+                const product = allProducts.find(p => p.id === r.productId);
+                return `<tr>
+                    <td>${product?.name || '—'}</td>
+                    <td>${r.userName || 'Аноним'}</td>
+                    <td>${'★'.repeat(r.rating)}${'☆'.repeat(5 - r.rating)}</td>
+                    <td>${(r.comment || '').substring(0, 50)}...</td>
+                    <td>${dateStr(r.createdAt)}</td>
+                    <td>
+                        <button class="action-btn" onclick="showReplyForm('${r.id}')"><i class="fas fa-reply"></i></button>
+                        <button class="action-btn danger" onclick="deleteReview('${r.id}')"><i class="fas fa-trash"></i></button>
+                    </td>
+                </tr>`;
+            }).join('')
+        }</tbody></table>`;
+    }
+    
+    window.deleteReview = async function(id) {
+        if (confirm('Удалить отзыв?')) {
+            await deleteDoc(doc(db, 'reviews', id));
+            loadAdminData();
+            toast('Отзыв удалён');
+        }
+    };
+    
+    window.showAdminPanel = function(name, btn) {
+        document.querySelectorAll('.admin-panel').forEach(p => p.classList.remove('active'));
+        document.getElementById('ap-' + name).classList.add('active');
+        document.querySelectorAll('.admin-tab').forEach(b => b.classList.remove('active'));
+        if (btn) btn.classList.add('active');
+    };
+    
+    window.filterAdminOrders = function(status) {
+        const filtered = status ? allOrders.filter(o => o.status === status) : allOrders;
+        renderAdminOrdersTable(filtered, 'admin-orders-table');
+    };
+    
+    window.filterAdminRequests = function(status) {
+        const filtered = status ? allRequests.filter(r => r.status === status) : allRequests;
+        renderAdminRequestsTable(filtered, 'admin-requests-table');
+    };
+    
+    window.updateOrderStatus = async function(id, status) {
+        await updateDoc(doc(db, 'orders', id), { status });
+        loadAdminData();
+    };
+    
+    window.updateRequestStatus = async function(id, status) {
+        await updateDoc(doc(db, 'requests', id), { status });
+        loadAdminData();
+    };
+    
+    let tempGalleryImages = [];
+    
+    window.openProductModal = async function(id = null) {
+        const p = id ? allProducts.find(pr => pr.id === id) : null;
+        tempGalleryImages = p?.images || (p?.imageUrl ? [p.imageUrl] : []);
+        
+        const catOptions = allCategories.map(c => `<option value="${c.id}" ${p?.categoryId === c.id ? 'selected' : ''}>${c.name}</option>`).join('');
+        const modal = document.getElementById('modal-container');
+        modal.innerHTML = `
+            <div class="modal-overlay" onclick="if(event.target===this)closeModal()">
+                <div class="modal-box">
+                    <h3 class="modal-title">${p ? 'Редактировать товар' : 'Добавить товар'}</h3>
+                    <div class="form-group"><label>Название *</label><input type="text" id="m-name" value="${p?.name || ''}"></div>
+                    <div class="form-group"><label>Описание</label><textarea id="m-desc" rows="3">${p?.description || ''}</textarea></div>
+                    <div class="form-group"><label>Цена (₽) *</label><input type="number" id="m-price" value="${p?.price || ''}"></div>
+                    <div class="form-group"><label>Категория</label><select id="m-cat">${catOptions}</select></div>
+                    <div class="form-group">
+                        <label>Изображения</label>
+                        <div class="image-upload-area" onclick="document.getElementById('m-gallery-input').click()">
+                            <i class="fas fa-cloud-upload-alt"></i> Нажмите, чтобы добавить изображения
+                        </div>
+                        <input type="file" id="m-gallery-input" multiple accept="image/*" style="display:none" onchange="handleGalleryUpload(event)">
+                        <div class="gallery-preview" id="m-gallery-preview">
+                            ${tempGalleryImages.map((img, i) => `
+                                <div class="gallery-preview-item">
+                                    <img src="${img}">
+                                    <button class="remove-btn" onclick="removeGalleryImage(${i})">×</button>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                    <div class="form-group"><label><input type="checkbox" id="m-stock" ${p === null || p?.inStock ? 'checked' : ''}> В наличии</label></div>
+                    <div class="modal-actions">
+                        <button class="btn btn-outline" onclick="closeModal()">Отмена</button>
+                        <button class="btn" onclick="saveProduct('${id || ''}')">Сохранить</button>
+                    </div>
+                </div>
+            </div>
+        `;
+    };
+    
+    window.handleGalleryUpload = function(event) {
+        const files = event.target.files;
+        for (let file of files) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                tempGalleryImages.push(e.target.result);
+                updateGalleryPreview();
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+    
+    window.removeGalleryImage = function(index) {
+        tempGalleryImages.splice(index, 1);
+        updateGalleryPreview();
+    };
+    
+    function updateGalleryPreview() {
+        const preview = document.getElementById('m-gallery-preview');
+        if (preview) {
+            preview.innerHTML = tempGalleryImages.map((img, i) => `
+                <div class="gallery-preview-item">
+                    <img src="${img}">
+                    <button class="remove-btn" onclick="removeGalleryImage(${i})">×</button>
+                </div>
+            `).join('');
+        }
+    }
+    
+    window.saveProduct = async function(productId) {
+        const name = document.getElementById('m-name').value.trim();
+        const price = parseFloat(document.getElementById('m-price').value);
+        if (!name || isNaN(price)) { toast('Заполните обязательные поля'); return; }
+        
+        const data = {
+            name,
+            description: document.getElementById('m-desc').value.trim(),
+            price,
+            categoryId: document.getElementById('m-cat').value,
+            images: tempGalleryImages,
+            inStock: document.getElementById('m-stock').checked,
+            updatedAt: serverTimestamp()
+        };
+        
+        if (productId) {
+            await updateDoc(doc(db, 'products', productId), data);
+        } else {
+            data.createdAt = serverTimestamp();
+            await addDoc(collection(db, 'products'), data);
+        }
+        closeModal();
+        
+        await loadProducts();
+        if (userProfile?.role === 'admin') await loadAdminData();
+        
+        toast(productId ? 'Товар обновлён' : 'Товар добавлен');
+        
+        if (document.getElementById('catalogPage').classList.contains('active')) {
+            renderCatalog();
+        }
+    };
+    
+    window.deleteProduct = async function(id) {
+        if (confirm('Удалить товар?')) {
+            await deleteDoc(doc(db, 'products', id));
+            loadProducts();
+            loadAdminData();
+        }
+    };
+    
+    window.editProduct = function(id) { openProductModal(id); };
+    
+    window.openCategoryModal = async function(id = null) {
+        const c = id ? allCategories.find(cat => cat.id === id) : null;
+        const modal = document.getElementById('modal-container');
+        modal.innerHTML = `
+            <div class="modal-overlay" onclick="if(event.target===this)closeModal()">
+                <div class="modal-box">
+                    <h3 class="modal-title">${c ? 'Редактировать' : 'Добавить'} категорию</h3>
+                    <div class="form-group"><label>Название *</label><input type="text" id="cm-name" value="${c?.name || ''}"></div>
+                    <div class="form-group"><label>Описание</label><textarea id="cm-desc" rows="2">${c?.description || ''}</textarea></div>
+                    <div class="modal-actions">
+                        <button class="btn btn-outline" onclick="closeModal()">Отмена</button>
+                        <button class="btn" onclick="saveCategory('${id || ''}')">Сохранить</button>
+                    </div>
+                </div>
+            </div>
+        `;
+    };
+    
+    window.saveCategory = async function(categoryId) {
+        const name = document.getElementById('cm-name').value.trim();
+        if (!name) { toast('Введите название'); return; }
+        const data = { name, description: document.getElementById('cm-desc').value.trim() };
+        if (categoryId) {
+            await updateDoc(doc(db, 'categories', categoryId), data);
+        } else {
+            await addDoc(collection(db, 'categories'), data);
+        }
+        closeModal();
+        loadCategories();
+        loadAdminData();
+        toast(categoryId ? 'Категория обновлена' : 'Категория добавлена');
+    };
+    
+    window.deleteCategory = async function(id) {
+        if (confirm('Удалить категорию?')) {
+            await deleteDoc(doc(db, 'categories', id));
+            loadCategories();
+            loadAdminData();
+        }
+    };
+    
+    window.editCategory = function(id) { openCategoryModal(id); };
+    window.closeModal = function() { document.getElementById('modal-container').innerHTML = ''; };
+
+    onAuthStateChanged(auth, async (user) => {
+        currentUser = user;
+        if (user) {
+            const userSnap = await getDoc(doc(db, 'users', user.uid));
+            userProfile = userSnap.data();
+            if (userProfile?.role === 'admin') {
+                document.getElementById('adminNavBtn').style.display = 'inline-block';
+            }
+        } else {
+            userProfile = null;
+            document.getElementById('adminNavBtn').style.display = 'none';
+        }
+        if (document.getElementById('accountPage').classList.contains('active')) renderAccount();
+    });
+
+    document.getElementById('currentYear').textContent = new Date().getFullYear();
+    
+    function loadURLParams() {
+        const params = new URLSearchParams(window.location.search);
+        if (params.has('category')) currentFilter = params.get('category');
+        if (params.has('search')) document.getElementById('searchInput').value = params.get('search');
+        if (params.has('minPrice')) document.getElementById('priceMin').value = params.get('minPrice');
+        if (params.has('maxPrice')) document.getElementById('priceMax').value = params.get('maxPrice');
+        if (params.has('sort')) document.getElementById('sortSelect').value = params.get('sort');
+        if (params.has('inStock')) document.getElementById('inStockOnly').checked = true;
+    }
+    
+    async function seedData() {
+        if (!db) return;
+        
+        const catSnap = await getDocs(collection(db, 'categories'));
+        
+        if (catSnap.empty) {
+            await addDoc(collection(db, 'categories'), {
+                name: 'AI Камеры',
+                description: 'Интеллектуальные камеры с компьютерным зрением для анализа дорожной обстановки'
+            });
+            await addDoc(collection(db, 'categories'), {
+                name: 'Светофоры',
+                description: 'Адаптивные светофорные системы с нейросетевым управлением'
+            });
+            await addDoc(collection(db, 'categories'), {
+                name: 'Датчики движения',
+                description: 'Высокоточные сенсоры для мониторинга транспортных потоков'
+            });
+            await addDoc(collection(db, 'categories'), {
+                name: 'Информационные табло',
+                description: 'Динамические знаки и табло переменной информации'
+            });
+        }
+        
+        const prodSnap = await getDocs(collection(db, 'products'));
+        
+        if (prodSnap.empty) {
+            const updatedCats = await getDocs(collection(db, 'categories'));
+            const catMap = {};
+            updatedCats.docs.forEach(d => {
+                catMap[d.data().name] = d.id;
+            });
+            
+            await addDoc(collection(db, 'products'), {
+                name: 'AI Камера SmartCam X1',
+                description: 'Интеллектуальная камера с нейросетевым анализом дорожной обстановки. Распознаёт типы ТС, пешеходов, дорожные знаки и разметку. Встроенный модуль глубокого обучения.',
+                price: 185000,
+                categoryId: catMap['AI Камеры'] || '',
+                images: ['https://images.unsplash.com/photo-1557804506-669a67965ba0?w=600&q=80'],
+                inStock: true,
+                tags: ['камера', 'AI', 'компьютерное зрение'],
+                createdAt: serverTimestamp()
+            });
+            
+            await addDoc(collection(db, 'products'), {
+                name: 'Нейросветофор NeuroLight Pro',
+                description: 'Адаптивный светофор с глубоким обучением. Анализирует трафик в реальном времени и оптимизирует циклы. Снижает время ожидания на 40%.',
+                price: 320000,
+                categoryId: catMap['Светофоры'] || '',
+                images: ['https://images.unsplash.com/photo-1580674684081-7617fbf3d745?w=600&q=80'],
+                inStock: true,
+                tags: ['светофор', 'нейросеть', 'адаптивный'],
+                createdAt: serverTimestamp()
+            });
+            
+            await addDoc(collection(db, 'products'), {
+                name: 'Радарный детектор RoadSense R2',
+                description: 'Высокоточный радарный детектор для подсчёта интенсивности движения и классификации транспортных средств. Точность 99.5%, дальность до 250 м.',
+                price: 95000,
+                categoryId: catMap['Датчики движения'] || '',
+                images: ['https://images.unsplash.com/photo-1563770660941-20978e870e26?w=600&q=80'],
+                inStock: true,
+                tags: ['радар', 'детектор', 'трафик'],
+                createdAt: serverTimestamp()
+            });
+            
+            await addDoc(collection(db, 'products'), {
+                name: 'Умное табло InfoSign LED',
+                description: 'Динамическое информационное табло с адаптивной яркостью и удалённым управлением. Отображает пробки, погоду, ограничения скорости в реальном времени.',
+                price: 145000,
+                categoryId: catMap['Информационные табло'] || '',
+                images: ['https://images.unsplash.com/photo-1581092160562-40aa08e78837?w=600&q=80'],
+                inStock: true,
+                tags: ['табло', 'LED', 'информация'],
+                createdAt: serverTimestamp()
+            });
+        }
+    }
+
+    loadURLParams();
+    
+    seedData().then(() => {
+        loadCategories().then(() => {
+            loadProducts();
+        });
+    });
+    
+    updateCartBadge();
+    loadSiteContent();
+    
+    setTimeout(() => {
+        const loading = document.getElementById('loadingScreen');
+        if (loading) loading.style.display = 'none';
+    }, 2000);
+</script>
+
+</body>
+</html>
